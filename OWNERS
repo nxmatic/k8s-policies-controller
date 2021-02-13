@@ -1,0 +1,19 @@
+# See the OWNERS docs at https://go.k8s.io/owners
+
+approvers:
+- akerven
+- nxmatic
+- richardsd
+- mnixo
+- bchauvin
+- glefevre
+- yjulienne-nuxeo
+
+reviewers:
+- akerven
+- nxmatic
+- richardsd
+- mnixo
+- bchauvin
+- glefevre
+- yjulienne-nuxeo

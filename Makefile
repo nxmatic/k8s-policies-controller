@@ -19,8 +19,8 @@ BUILD_IMAGE ?= golang:1.14-buster
 controller-gen.bin := $(shell which controller-gen)
 controller-gen.bin := $(if $(controller-gen.bin),$(controller-gen.bin),$(GOPATH)/bin/controller-gen)
 
-jx.bin := $(shell which jx)
-jx.bin := $(if $(jx.bin),$(jx.bin),/usr/local/bin/jx)
+jx-cli.bin := $(shell which jx-cli)
+jx-cli.bin := $(if $(jx-cli.bin),$(jx-cli.bin),/usr/local/bin/jx-cli)
 
 kustomize.bin := $(shell which kustomize)
 kustomize.bin := $(if $(kustomize.bin),$(kustomize.bin),/usr/local/bin/kustomize)
@@ -106,7 +106,7 @@ endef
 .PHONY: generate
 generate: packages := gcpauthpolicyprofile nodepolicyprofile
 generate: script=$(generate.script)
-generate: $(controller-gen.bin) $(jx.bin) $(kustomize.bin)
+generate: | $(controller-gen.bin) $(jx-cli.bin) $(kustomize.bin)
 generate:
 	$(foreach package,$(packages),$(script))
 
@@ -114,7 +114,7 @@ define generate.script =
 	$(controller-gen.bin) object paths=./apis/$(package)/...
 	$(controller-gen.bin) crd paths=./apis/$(package)/... output:crd:artifacts:config=deploy/$(package)
 	$(controller-gen.bin) rbac:roleName=$(package)-controller paths=./apis/$(package)/... output:rbac:artifacts:config=deploy/$(package)
-	$(jx.bin) gitops rename --dir=deploy/$(package)
+	$(jx-cli.bin) gitops rename --dir=deploy/$(package)
 $(newline)
 endef
 
@@ -143,8 +143,9 @@ os := $(patsubst MINGW%,MSYS,$(os))
 os := $(shell echo $(os) | tr '[:upper:]' '[:lower:]')
 endif
 
-/usr/local/bin/jx:
+/usr/local/bin/jx-cli:
 	curl -sL https://github.com/jenkins-x/jx-cli/releases/download/v3.1.211/jx-cli-$(os)-amd64.tar.gz| tar xvz -C /usr/local/bin -f - jx
+	mv /usr/local/bin/jx $(@)
 	chmod +x $(@)
 
 $(HOME)/.config/kustomize/plugin /usr/local/bin/kustomize:

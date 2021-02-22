@@ -103,6 +103,19 @@ func (s *RequestedProfileStage) Exists() *RequestedProfileStage {
 	}
 	s.Profile = *profile
 
+	if s.Profile.Spec.Selector != nil {
+		selector, err := meta_api.LabelSelectorAsSelector(s.Profile.Spec.Selector)
+		if err != nil {
+			s.Error = err
+			s.Allow(nil)
+			return s
+		}
+		if !selector.Matches(labels.Set(s.ServiceAccount.Labels)) {
+			s.Allow(nil)
+			return s
+		}
+	}
+
 	s.Logger = s.Logger.WithValues("profile", s.Profile.ObjectMeta.Name)
 
 	return s

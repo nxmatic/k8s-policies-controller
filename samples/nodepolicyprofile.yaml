@@ -3,6 +3,9 @@ kind: NodePolicyProfile
 metadata:
   name: stateless
 spec:
+  podSelector:
+    matchLabels:
+      stateless: true
   nodeSelector:
     type: "stateless"
   tolerations:

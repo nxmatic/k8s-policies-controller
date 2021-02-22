@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 
 	core_api "k8s.io/api/core/v1"
+	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
+	labels "k8s.io/apimachinery/pkg/labels"
 
 	nodepolicy_api "github.com/nuxeo/k8s-policy-controller/apis/nodepolicyprofile/v1alpha1"
 
@@ -104,6 +106,35 @@ func (s *RequestedProfileStage) Exists() *RequestedProfileStage {
 	if s.Error != nil {
 		s.Allow(nil)
 		return s
+	}
+	return s
+}
+
+func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
+	if !s.CanContinue() {
+		return s
+	}
+	s.Namespace, s.Error = s.Interface.GetNamespace(s.AdmissionRequest.Namespace)
+	if s.Error != nil {
+		s.Allow(nil)
+		return s
+	}
+	s.Profile, s.Error = s.Interface.ResolveProfile(&s.Namespace.ObjectMeta, &s.Pod.ObjectMeta)
+	if s.Error != nil {
+		s.Allow(nil)
+		return s
+	}
+	if s.Profile.Spec.PodSelector != nil {
+		selector, err := meta_api.LabelSelectorAsSelector(s.Profile.Spec.PodSelector)
+		if err != nil {
+			s.Error = err
+			s.Allow(nil)
+			return s
+		}
+		if !selector.Matches(labels.Set(s.Pod.Labels)) {
+			s.Allow(nil)
+			return s
+		}
 	}
 	s.Logger = s.Logger.WithValues("profile", s.Profile.ObjectMeta.Name)
 	return s

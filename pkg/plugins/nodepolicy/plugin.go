@@ -53,6 +53,6 @@ func (h *podHook) Review(s *reviewer_spi.GivenStage) *reviewer_spi.WhenStage {
 	return reviewer.Given().
 		The().RequestedObject(s).And().
 		The().RequestedKind().IsAPod().End().And().
-		The().RequestedProfile().Exists().End().
+		The().RequestedProfile().Exists().And().Applies().End().
 		End()
 }

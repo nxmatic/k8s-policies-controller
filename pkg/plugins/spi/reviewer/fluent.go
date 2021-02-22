@@ -184,9 +184,6 @@ func (w *WhenStage) PatchTheRequest() *WhenStage {
 	if !w.CanContinue() {
 		return w
 	}
-	if !w.CanContinue() {
-		return w
-	}
 	w.Patch, w.Error = w.Patcher.Create()
 	if w.Error != nil {
 		w.Fail(errors.WithMessage(w.Error, "Can't patch object"))

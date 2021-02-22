@@ -50,9 +50,10 @@ const (
 
 // ProfileSpec defines the desired state of NodePolicyProfile
 type ProfileSpec struct {
-	Tolerations  []core_api.Toleration `json:"tolerations,omitempty"`
-	NodeAffinity core_api.NodeAffinity `json:"nodeAffinity,omitempty"`
-	NodeSelector map[string]string     `json:"nodeSelector,omitempty"`
+	Tolerations  []core_api.Toleration   `json:"tolerations,omitempty"`
+	NodeAffinity core_api.NodeAffinity   `json:"nodeAffinity,omitempty"`
+	NodeSelector map[string]string       `json:"nodeSelector,omitempty"`
+	PodSelector  *meta_api.LabelSelector `json:"podSelector,omitempty"`
 }
 
 // ProfileStatus defines the observed state of NodePolicyProfile

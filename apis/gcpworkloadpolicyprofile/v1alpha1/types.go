@@ -1,6 +1,6 @@
 // +k8s:deepcopy-gen=package,register
 // +kubebuilder:object:generate=true
-// +groupName=gcpauthpolicy.nuxeo.io
+// +groupName=gcpworkloadpolicy.nuxeo.io
 // +versionName=v1alpha1
 package v1alpha1
 
@@ -11,16 +11,14 @@ import (
 )
 
 const (
-	ProfileKey KeyValue = "gcpauthpolicy.nuxeo.io/profile"
-	TypeKey    KeyValue = "gcpauthpolicy.nuxeo.io/type"
-	WatchKey   KeyValue = "gcpauthpolicy.nuxeo.io/watch"
-
-	ImagePullSecretTypeValue TypeValue = "ImagePullSecret"
+	ProfileKey KeyValue = "gcpworkloadpolicy.nuxeo.io/profile"
+	TypeKey    KeyValue = "gcpworkloadpolicy.nuxeo.io/type"
+	WatchKey   KeyValue = "gcpworkloadpolicy.nuxeo.io/watch"
 )
 
 var (
 	// SchemeGroupVersion is group version used to register these objects
-	SchemeGroupVersion = schema.GroupVersion{Group: "gcpauthpolicy.nuxeo.io", Version: "v1alpha1"}
+	SchemeGroupVersion = schema.GroupVersion{Group: "gcpworkloadpolicy.nuxeo.io", Version: "v1alpha1"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
 	SchemeBuilder = &scheme.Builder{GroupVersion: SchemeGroupVersion}
@@ -41,7 +39,7 @@ const (
 	ProfileKind ResourceKind = "Profile"
 )
 
-// KeyValue typed gcpauth annotation identifiers
+// KeyValue typed gcpworkload annotation identifiers
 type KeyValue string
 
 func (name KeyValue) String() string {
@@ -57,7 +55,7 @@ func (name TypeValue) String() string {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster
 
-// GCPAuthProfile is the schema for the GCPAuthPolicy profile API
+// gcpworkloadProfile is the schema for the gcpworkloadPolicy profile API
 type Profile struct {
 	meta_api.TypeMeta   `json:",inline"`
 	meta_api.ObjectMeta `json:"metadata,omitempty"`
@@ -67,18 +65,14 @@ type Profile struct {
 }
 
 type ProfileSpec struct {
-	Datasource SecretRef               `json:"datasource,omitempty"`
-	Selector   *meta_api.LabelSelector `json:"selector,omitempty"`
-}
-
-type SecretRef struct {
-	Namespace string `json:"namespace,omitempty"`
-	Name      string `json:"name,omitempty"`
+	ServiceAccount string                  `json:"serviceaccount"`
+	Project        string                  `json:"project"`
+	Selector       *meta_api.LabelSelector `json:"selector,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// ProfileList contains a list of GCPAuthPolicyProfile
+// ProfileList contains a list of gcpworkloadPolicyProfile
 type ProfileList struct {
 	meta_api.TypeMeta `json:",inline"`
 	meta_api.ListMeta `json:"metadata,omitempty"`

@@ -104,7 +104,7 @@ define newline :=
 endef
 
 .PHONY: generate
-generate: packages := gcpauthpolicyprofile nodepolicyprofile
+generate: packages := gcpauthpolicyprofile gcpworkloadpolicyprofile nodepolicyprofile
 generate: script=$(generate.script)
 generate: | $(controller-gen.bin) $(jx-cli.bin) $(kustomize.bin)
 generate:

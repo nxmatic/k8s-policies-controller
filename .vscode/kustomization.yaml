@@ -10,14 +10,11 @@ resources:
   - devpod-cm.yaml
   - devpod-workspace-persistentvolumeclaim.yaml
   - gcpauthpolicyprofile-devpod-deploy.yaml
+  - gcpworkloadpolicyprofile-devpod-deploy.yaml
   - nodepolicyprofile-devpod-deploy.yaml
 patchesStrategicMerge:
   - disable-gcpauthpolicyprofile-controller.yaml
   - disable-nodepolicyprofile-controller.yaml
 images:
   - name: golang
-    newName: pop-os.home:5000/library/golang
     newTag: 1.14-buster-supervisor
-  - name: k8s-policy-controller
-    newName: pop-os.home:5000/library/k8s-policy-controller
-    newTag: latest

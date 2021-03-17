@@ -24,13 +24,9 @@ type (
 		*k8s_spi.Interface
 	}
 
-	Profile          = gcpauth_api.Profile
-	Spec             = gcpauth_api.ProfileSpec
-	Status           = gcpauth_api.ProfileStatus
-	FeatureGates     = gcpauth_api.FeatureGates
-	FeatureGate      = gcpauth_api.FeatureGate
-	Datasource       = gcpauth_api.Datasource
-	SecretDatasource = gcpauth_api.SecretDatasource
+	Profile = gcpauth_api.Profile
+	Spec    = gcpauth_api.ProfileSpec
+	Status  = gcpauth_api.ProfileStatus
 
 	TypeValue = gcpauth_api.TypeValue
 	KeyValue  = gcpauth_api.KeyValue
@@ -106,10 +102,6 @@ func (i *Interface) GetSecret(secret *core_api.Secret) (*core_api.Secret, error)
 	return secret, nil
 }
 
-func (i *Interface) secretNameOf(profile *Profile, typevalue TypeValue) string {
-	return strings.ToLower(profile.ObjectMeta.Name + "-" + typevalue.String())
-}
-
 func (i *Interface) DeleteImagePullSecret(name string) error {
 	return i.Resource(SecretsResource).
 		DeleteCollection(context.TODO(),
@@ -130,8 +122,7 @@ func (i *Interface) DeleteSecret(secret *core_api.Secret) error {
 func (i *Interface) GetImagePullSecret(profile *Profile) (*core_api.Secret, error) {
 	return i.GetSecret(&core_api.Secret{
 		ObjectMeta: meta_api.ObjectMeta{
-			Name:      i.secretNameOf(profile, ImagePullSecretTypeValue),
-			Namespace: profile.Spec.Storage.NamespaceStorage.Name,
+			Name: profile.ObjectMeta.Name,
 		},
 	})
 }
@@ -159,8 +150,7 @@ func (i *Interface) UpdateImagePullSecret(profile *Profile) error {
 func (i *Interface) CreateImagePullSecret(profile *Profile, datasource *core_api.Secret) (*core_api.Secret, error) {
 	secret := core_api.Secret{
 		ObjectMeta: meta_api.ObjectMeta{
-			Name:      i.secretNameOf(profile, ImagePullSecretTypeValue),
-			Namespace: profile.Spec.Storage.NamespaceStorage.Name,
+			Name: profile.ObjectMeta.Name,
 			Labels: map[string]string{
 				ProfileKey.String():           profile.ObjectMeta.Name,
 				gcpauth_api.WatchKey.String(): "true",

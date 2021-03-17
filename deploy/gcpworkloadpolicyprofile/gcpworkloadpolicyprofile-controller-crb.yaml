@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gcpworkloadpolicyprofile-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gcpworkloadpolicyprofile-controller
+subjects:
+- kind: ServiceAccount
+  name: gcpworkloadpolicyprofile-controller
+  namespace: policies

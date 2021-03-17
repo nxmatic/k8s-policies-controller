@@ -6,6 +6,7 @@ package v1alpha1
 
 import (
 	"k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -85,6 +86,11 @@ func (in *ProfileSpec) DeepCopyInto(out *ProfileSpec) {
 		for key, val := range *in {
 			(*out)[key] = val
 		}
+	}
+	if in.PodSelector != nil {
+		in, out := &in.PodSelector, &out.PodSelector
+		*out = new(metav1.LabelSelector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 

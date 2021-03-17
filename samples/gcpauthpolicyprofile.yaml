@@ -3,13 +3,6 @@ kind: Profile
 metadata:
   name: pfouh
 spec:
-  features:
-    imagePullSecrets:
-      enabled: true
-  storage:
-    namespace:
-      name: policies
   datasource:
-    secret:
-      namespace: policies
-      name: datasource
+    namespace: policies
+    name: datasource

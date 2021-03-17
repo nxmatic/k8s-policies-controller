@@ -2,18 +2,18 @@ apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from-secret: policies/gcpauthpolicyprofile-controller-tls
-  name: gcpauthpolicyprofile
+    cert-manager.io/inject-ca-from-secret: policies/gcpworkloadpolicyprofile-controller-tls
+  name: gcpworkloadpolicyprofile
 webhooks:
 - clientConfig:
     caBundle: ""
     service:
-      name: gcpauthpolicyprofile-controller
+      name: gcpworkloadpolicyprofile-controller
       namespace: default
       path: /mutate-v1-serviceaccounts
       port: 443
   failurePolicy: Ignore
-  name: gcpauthpolicyprofile-controller.policies.svc.cluster.local
+  name: gcpworkloadpolicyprofile-controller.policies.svc.cluster.local
   objectSelector:
     matchExpressions:
     - key: app
@@ -28,6 +28,7 @@ webhooks:
     - v1
     operations:
     - CREATE
+    - DELETE
     resources:
     - serviceaccounts
   sideEffects: NoneOnDryRun

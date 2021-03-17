@@ -1,9 +1,11 @@
-package gcpauthpolicy
+package gcpworkloadpolicy
 
 import (
-	gcpauth_api "github.com/nuxeo/k8s-policy-controller/apis/gcpauthpolicyprofile/v1alpha1"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauthpolicy/reconciler"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauthpolicy/reviewer"
+	iam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
+	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/apis/gcpworkloadpolicyprofile/v1alpha1"
+
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/reconciler"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/reviewer"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
 	reviewer_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
 	"github.com/pkg/errors"
@@ -14,7 +16,7 @@ import (
 )
 
 var (
-	_name                   string                                            = "gcpauthpolicyprofile"
+	_name                   string                                            = "gcpworkloadpolicyprofile"
 	_serviceaccountResource schema.GroupVersionResource                       = core_api.SchemeGroupVersion.WithResource("serviceaccounts")
 	_serviceaccountHook     reviewer_spi.Hook                                 = &serviceaccountHook{}
 	_plugin                 spi.Plugin                                        = &plugin{}
@@ -39,8 +41,11 @@ func (p *plugin) Name() string {
 
 func (p *plugin) Add(manager manager.Manager, client dynamic.Interface) error {
 	scheme := manager.GetScheme()
-	if err := gcpauth_api.SchemeBuilder.AddToScheme(scheme); err != nil {
-		return errors.Wrap(err, "failed to load gcpauthpolicyprofile scheme")
+	if err := gcpworkload_api.SchemeBuilder.AddToScheme(scheme); err != nil {
+		return errors.Wrap(err, "failed to load gcpworkloadpolicyprofile scheme")
+	}
+	if err := iam_api.SchemeBuilder.AddToScheme(scheme); err != nil {
+		return errors.Wrap(err, "failed to load gcpworkloadpolicyprofile scheme")
 	}
 	if err := core_api.SchemeBuilder.AddToScheme(scheme); err != nil {
 		return errors.Wrap(err, "failed to load core scheme")
@@ -55,9 +60,6 @@ func (h *serviceaccountHook) Review(s *reviewer_spi.GivenStage) *reviewer_spi.Wh
 	return reviewer.Given().
 		The().RequestedObject(s).And().
 		The().RequestedKind().IsAServiceAccount().End().
-		The().RequestedProfile().
-		Applies().And().
-		The().SecretIsAvailable().
-		End().
+		The().RequestedProfile().Applies().End().
 		End()
 }

@@ -27,20 +27,20 @@ func (p *serviceaccountPatcher) addLabelsPatch() reviewer.PatchOperation {
 			Op:   "add",
 			Path: "/metadata/labels",
 			Value: map[string]string{
-				"/metadata/labels/gcpauthpolicy.nuxeo.io~1profile": p.Profile.Name,
+				"gcpauthpolicy.nuxeo.io/profile": p.Profile.Name,
 			},
 		}
 	}
 	return reviewer.PatchOperation{
 		Op:    "add",
 		Path:  "/metadata/labels/gcpauthpolicy.nuxeo.io~1profile",
-		Value: p.Profile.Name,
+		Value: p.Profile.ObjectMeta.Name,
 	}
 }
 
 func (p *serviceaccountPatcher) addImagePullSecretPatch() reviewer.PatchOperation {
 	value := map[string]string{
-		"name": p.Profile.Spec.Datasource.SecretDatasource.Name,
+		"name": p.Profile.ObjectMeta.Name,
 	}
 	if p.ServiceAccount.ImagePullSecrets == nil {
 		return reviewer.PatchOperation{

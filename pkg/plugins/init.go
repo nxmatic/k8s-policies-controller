@@ -4,6 +4,7 @@ import (
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
 
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauthpolicy"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/nodepolicy"
 )
 
@@ -25,6 +26,7 @@ func init() {
 		policies: make([]string, size),
 	}
 	registry.registerPlugin(gcpauthpolicy.SupplyPlugin)
+	registry.registerPlugin(gcpworkloadpolicy.SupplyPlugin)
 	registry.registerPlugin(nodepolicy.SupplyPlugin)
 }
 

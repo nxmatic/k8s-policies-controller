@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.5
   creationTimestamp: null
-  name: profiles.gcpauthpolicy.nuxeo.io
+  name: profiles.gcpworkloadpolicy.nuxeo.io
 spec:
-  group: gcpauthpolicy.nuxeo.io
+  group: gcpworkloadpolicy.nuxeo.io
   names:
     kind: Profile
     listKind: ProfileList
@@ -17,7 +17,8 @@ spec:
   scope: Cluster
   validation:
     openAPIV3Schema:
-      description: GCPAuthProfile is the schema for the GCPAuthPolicy profile API
+      description: gcpworkloadProfile is the schema for the gcpworkloadPolicy profile
+        API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -33,13 +34,8 @@ spec:
           type: object
         spec:
           properties:
-            datasource:
-              properties:
-                name:
-                  type: string
-                namespace:
-                  type: string
-              type: object
+            project:
+              type: string
             selector:
               description: A label selector is a label query over a set of resources.
                 The result of matchLabels and matchExpressions are ANDed. An empty
@@ -86,6 +82,11 @@ spec:
                     are ANDed.
                   type: object
               type: object
+            serviceaccount:
+              type: string
+          required:
+          - project
+          - serviceaccount
           type: object
         status:
           description: ProfileStatus the status

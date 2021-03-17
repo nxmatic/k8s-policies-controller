@@ -3,10 +3,10 @@ package reviewer
 import (
 	"encoding/json"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauthpolicy/k8s"
-	"github.com/pkg/errors"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/k8s"
 
-	gcpauth_api "github.com/nuxeo/k8s-policy-controller/apis/gcpauthpolicyprofile/v1alpha1"
+	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/apis/gcpworkloadpolicyprofile/v1alpha1"
+	admission_api "k8s.io/api/admission/v1"
 	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -20,7 +20,7 @@ type (
 		k8s.Interface
 		*spi.GivenStage
 		core_api.ServiceAccount
-		gcpauth_api.Profile
+		gcpworkload_api.Profile
 	}
 	RequestedKindStage struct {
 		*RequestedServiceAccountStage
@@ -81,22 +81,9 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 		return s
 	}
 
-	if s.Profile.Spec.Selector != nil {
-		selector, err := meta_api.LabelSelectorAsSelector(s.Profile.Spec.Selector)
-		if err != nil {
-			s.Error = err
-			s.Allow(nil)
-			return s
-		}
-		if !selector.Matches(labels.Set(s.ServiceAccount.Labels)) {
-			s.Allow(nil)
-			return s
-		}
-	}
-
 	s.Namespace, s.Error = s.Interface.GetNamespace(s.AdmissionRequest.Namespace)
 	if s.Error != nil {
-		s.Allow(nil)
+		s.Allow(s.Error)
 		return s
 	}
 
@@ -105,13 +92,14 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 		s.Allow(err)
 		return s
 	}
+
 	s.Profile = *profile
 
 	if s.Profile.Spec.Selector != nil {
 		selector, err := meta_api.LabelSelectorAsSelector(s.Profile.Spec.Selector)
 		if err != nil {
 			s.Error = err
-			s.Allow(nil)
+			s.Allow(err)
 			return s
 		}
 		if !selector.Matches(labels.Set(s.ServiceAccount.Labels)) {
@@ -120,19 +108,20 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 		}
 	}
 
+	switch s.Operation {
+	case admission_api.Create:
+		s.Error = s.Interface.CreateIAMPolicyMember(&s.Profile, &s.ServiceAccount)
+		if s.Error != nil {
+			s.Fail(s.Error)
+			return s
+		}
+	case admission_api.Delete:
+		s.Error = s.Interface.DeleteIAMPolicyMember(&s.Profile, &s.ServiceAccount)
+		s.Allow(s.Error)
+	}
+
 	s.Logger = s.Logger.WithValues("profile", s.Profile.ObjectMeta.Name)
 
-	return s
-}
-
-func (s *RequestedProfileStage) SecretIsAvailable() *RequestedProfileStage {
-	if !s.CanContinue() {
-		return s
-	}
-	err := s.Interface.EnsureNamespaceImagePullSecret(&s.Profile, s.ServiceAccount.ObjectMeta.Namespace)
-	if err != nil {
-		s.Fail(errors.Wrap(err, "Cannot ensure we have an image pull secret available"))
-	}
 	return s
 }
 

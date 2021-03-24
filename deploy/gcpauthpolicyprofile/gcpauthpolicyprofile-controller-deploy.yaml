@@ -7,14 +7,12 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/instance: gcpauthpolicyprofile-controller
-      app.kubernetes.io/name: gcpauthpolicyprofile-controller
+      app.kubernetes.io/name: k8s-policy-controller
   template:
     metadata:
       labels:
-        app: k8s-policy-controller
-        instance: gcpauthpolicyprofile
         app.kubernetes.io/instance: gcpauthpolicyprofile-controller
-        app.kubernetes.io/name: gcpauthpolicyprofile-controller
+        app.kubernetes.io/name: k8s-policy-controller
     spec:
       containers:
       - args:

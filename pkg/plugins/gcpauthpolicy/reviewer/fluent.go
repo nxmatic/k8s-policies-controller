@@ -81,19 +81,6 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 		return s
 	}
 
-	if s.Profile.Spec.Selector != nil {
-		selector, err := meta_api.LabelSelectorAsSelector(s.Profile.Spec.Selector)
-		if err != nil {
-			s.Error = err
-			s.Allow(nil)
-			return s
-		}
-		if !selector.Matches(labels.Set(s.ServiceAccount.Labels)) {
-			s.Allow(nil)
-			return s
-		}
-	}
-
 	s.Namespace, s.Error = s.Interface.GetNamespace(s.AdmissionRequest.Namespace)
 	if s.Error != nil {
 		s.Allow(nil)

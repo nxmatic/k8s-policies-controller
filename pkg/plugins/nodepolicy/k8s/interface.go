@@ -3,9 +3,11 @@ package k8s
 import (
 	"context"
 	"errors"
+	"strings"
 
 	nodepolicy_api "github.com/nuxeo/k8s-policy-controller/apis/nodepolicyprofile/v1alpha1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 
 	spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -23,10 +25,25 @@ func (s *Interface) ResolveProfile(namespace *meta_api.ObjectMeta, resource *met
 	annotations := make(map[string]string)
 	annotations = s.MergeAnnotations(annotations, namespace)
 	annotations = s.MergeAnnotations(annotations, resource)
-	if name, ok := annotations[nodepolicy_api.AnnotationPolicyProfile.String()]; ok {
-		return s.GetProfile(name)
+	if names, ok := annotations[nodepolicy_api.AnnotationPolicyProfile.String()]; ok {
+		for _, name := range strings.Split(names, ",") {
+			profile, err := s.GetProfile(name)
+			if err != nil {
+				return nil, errors.New("cannot retrieve profile " + name)
+			}
+			if profile.Spec.PodSelector != nil {
+				selector, err := meta_api.LabelSelectorAsSelector(profile.Spec.PodSelector)
+				if err != nil {
+					return nil, err
+				}
+				if !selector.Matches(labels.Set(resource.Labels)) {
+					continue
+				}
+			}
+			return profile, nil
+		}
 	}
-	return nil, errors.New("Annotation not found")
+	return nil, errors.New("no profile")
 }
 
 func (s *Interface) GetProfile(name string) (*nodepolicy_api.Profile, error) {

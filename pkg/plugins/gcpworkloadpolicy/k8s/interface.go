@@ -3,6 +3,7 @@ package k8s
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/labels"
@@ -51,8 +52,23 @@ func (s *Interface) ResolveProfile(namespace *meta_api.ObjectMeta, resource *met
 	annotations = s.MergeAnnotations(annotations, namespace)
 	annotations = s.MergeAnnotations(annotations, resource)
 
-	if name, ok := annotations[ProfileKey.String()]; ok {
-		return s.GetProfile(name)
+	if names, ok := annotations[gcpworkload_api.ProfileKey.String()]; ok {
+		for _, name := range strings.Split(names, ",") {
+			profile, err := s.GetProfile(name)
+			if err != nil {
+				return nil, errors.New("cannot retrieve profile " + name)
+			}
+			if profile.Spec.Selector != nil {
+				selector, err := meta_api.LabelSelectorAsSelector(profile.Spec.Selector)
+				if err != nil {
+					return nil, err
+				}
+				if !selector.Matches(labels.Set(resource.Labels)) {
+					continue
+				}
+			}
+			return profile, nil
+		}
 	}
 	return nil, errors.New("Annotation not found")
 

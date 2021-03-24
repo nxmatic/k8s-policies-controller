@@ -27,6 +27,15 @@ func (p *patcher) Create() ([]reviewer.PatchOperation, error) {
 }
 
 func (p *patcher) addLabelProfilePatch() []reviewer.PatchOperation {
+	if p.Pod.Labels == nil {
+		return append(p.Patch, reviewer.PatchOperation{
+			Op:   "add",
+			Path: "/metadata/labels",
+			Value: map[string]string{
+				"nodepolicy.nuxeo.io/profile": p.Profile.Name,
+			},
+		})
+	}
 	return append(p.Patch, reviewer.PatchOperation{
 		Op:    "add",
 		Path:  "/metadata/labels/nodepolicy.nuxeo.io~1profile",
@@ -38,7 +47,14 @@ func (p *patcher) addNodeProfilePatch() []reviewer.PatchOperation {
 	if ok {
 		return p.Patch
 	}
-
+	if p.Pod.Annotations == nil {
+		return append(p.Patch, reviewer.PatchOperation{
+			Op:   "add",
+			Path: "/metadata/annotations",
+			Value: map[string]string{
+				"nodepolicy.nuxeo.io/profile": p.Profile.Name,
+			}})
+	}
 	return append(p.Patch, reviewer.PatchOperation{
 		Op:    "add",
 		Path:  "/metadata/annotations/nodepolicy.nuxeo.io~1profile",

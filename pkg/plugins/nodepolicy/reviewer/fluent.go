@@ -93,23 +93,6 @@ func (s *RequestedPodStage) RequestedProfile() *RequestedProfileStage {
 	return &RequestedProfileStage{s, nil}
 }
 
-func (s *RequestedProfileStage) Exists() *RequestedProfileStage {
-	if !s.CanContinue() {
-		return s
-	}
-	s.Namespace, s.Error = s.Interface.GetNamespace(s.AdmissionRequest.Namespace)
-	if s.Error != nil {
-		s.Allow(nil)
-		return s
-	}
-	s.Profile, s.Error = s.Interface.ResolveProfile(&s.Namespace.ObjectMeta, &s.Pod.ObjectMeta)
-	if s.Error != nil {
-		s.Allow(nil)
-		return s
-	}
-	return s
-}
-
 func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 	if !s.CanContinue() {
 		return s

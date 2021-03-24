@@ -10,7 +10,7 @@ webhooks:
     service:
       name: nodepolicyprofile-controller
       namespace: default
-      path: /mutate-v1-pod
+      path: /mutate-v1-pods
       port: 443
   failurePolicy: Ignore
   name: nodepolicyprofile-controller.policies.svc.cluster.local

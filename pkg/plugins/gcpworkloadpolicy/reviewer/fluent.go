@@ -78,6 +78,11 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 		return s
 	}
 
+	if _, ok := s.ServiceAccount.ObjectMeta.Annotations["iam.gke.io/gcp-service-account"]; ok {
+		s.Allow(nil)
+		return s
+	}
+
 	s.Namespace, s.Error = s.Interface.GetNamespace(s.AdmissionRequest.Namespace)
 	if s.Error != nil {
 		s.Allow(s.Error)

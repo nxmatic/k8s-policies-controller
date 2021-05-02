@@ -34,6 +34,8 @@ spec:
           type: object
         spec:
           properties:
+            namespaces:
+              type: string
             project:
               type: string
             selector:

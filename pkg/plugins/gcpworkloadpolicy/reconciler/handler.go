@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	gcpauthpolicy_api "github.com/nuxeo/k8s-policy-controller/apis/gcpauthpolicyprofile/v1alpha1"
+	gcpworkloadpolicy_api "github.com/nuxeo/k8s-policy-controller/apis/gcpworkloadpolicyprofile/v1alpha1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -24,7 +24,7 @@ func (e *profileDecorator) Create(evt event.CreateEvent, q workqueue.RateLimitin
 }
 
 func (e *profileDecorator) Update(evt event.UpdateEvent, q workqueue.RateLimitingInterface) {
-	if !reflect.DeepEqual(evt.ObjectOld.(*gcpauthpolicy_api.Profile).Spec, evt.ObjectNew.(*gcpauthpolicy_api.Profile).Spec) {
+	if !reflect.DeepEqual(evt.ObjectOld.(*gcpworkloadpolicy_api.Profile).Spec, evt.ObjectNew.(*gcpworkloadpolicy_api.Profile).Spec) {
 		log.Log.WithValues("policy", evt.ObjectNew.GetName()).Info(
 			fmt.Sprintf("%T/%s has been updated", evt.ObjectNew, evt.ObjectNew.GetName()))
 	}
@@ -87,10 +87,10 @@ func (e *enqueueRequestForOwner) Generic(evt event.GenericEvent, q workqueue.Rat
 }
 
 func (e *enqueueRequestForOwner) getOwnerReconcileRequests(object metav1.Object) *reconcile.Request {
-	if len(object.GetLabels()[gcpauthpolicy_api.ProfileKey.String()]) > 0 {
+	if len(object.GetLabels()[gcpworkloadpolicy_api.ProfilesKey.String()]) > 0 {
 		return &reconcile.Request{NamespacedName: types.NamespacedName{
 			Namespace: object.GetNamespace(),
-			Name:      object.GetLabels()[gcpauthpolicy_api.ProfileKey.String()],
+			Name:      object.GetLabels()[gcpworkloadpolicy_api.ProfilesKey.String()],
 		}}
 	}
 	return nil

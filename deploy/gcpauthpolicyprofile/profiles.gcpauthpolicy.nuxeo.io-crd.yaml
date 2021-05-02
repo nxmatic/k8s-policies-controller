@@ -40,6 +40,8 @@ spec:
                 namespace:
                   type: string
               type: object
+            namespaces:
+              type: string
             selector:
               description: A label selector is a label query over a set of resources.
                 The result of matchLabels and matchExpressions are ANDed. An empty

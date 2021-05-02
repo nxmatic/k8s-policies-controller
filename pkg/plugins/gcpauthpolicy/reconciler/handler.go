@@ -87,10 +87,10 @@ func (e *enqueueRequestForOwner) Generic(evt event.GenericEvent, q workqueue.Rat
 }
 
 func (e *enqueueRequestForOwner) getOwnerReconcileRequests(object metav1.Object) *reconcile.Request {
-	if len(object.GetLabels()[gcpauthpolicy_api.ProfileKey.String()]) > 0 {
+	if len(object.GetLabels()[gcpauthpolicy_api.ProfilesKey.String()]) > 0 {
 		return &reconcile.Request{NamespacedName: types.NamespacedName{
 			Namespace: object.GetNamespace(),
-			Name:      object.GetLabels()[gcpauthpolicy_api.ProfileKey.String()],
+			Name:      object.GetLabels()[gcpauthpolicy_api.ProfilesKey.String()],
 		}}
 	}
 	return nil

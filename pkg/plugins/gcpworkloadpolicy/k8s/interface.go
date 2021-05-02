@@ -3,6 +3,7 @@ package k8s
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/labels"
@@ -32,7 +33,7 @@ type (
 )
 
 const (
-	ProfileKey = gcpworkload_api.ProfileKey
+	ProfileKey = gcpworkload_api.ProfilesKey
 )
 
 var (
@@ -53,11 +54,18 @@ func NewInterface(client dynamic.Interface) (*Interface, error) {
 }
 
 func (s *Interface) ResolveProfile(namespace *meta_api.ObjectMeta, resource *meta_api.ObjectMeta) (*gcpworkload_api.Profile, error) {
-	names := s.MergeAnnotation(gcpworkload_api.ProfileKey.String(), resource, namespace, s.DefaultMeta)
+	names := s.MergeAnnotation(gcpworkload_api.ProfilesKey.String(), resource, namespace, s.DefaultMeta)
 	for _, name := range names {
 		profile, err := s.GetProfile(name)
 		if err != nil {
 			return nil, errors.New("cannot retrieve profile " + name)
+		}
+		if profile.Spec.Namespaces != "" {
+			if ok, err := regexp.MatchString(profile.Spec.Namespaces, namespace.Name); err != nil {
+				return nil, errors.New("Cannot evaluate " + profile.Spec.Namespaces + " from profile " + profile.Name)
+			} else if !ok {
+				continue
+			}
 		}
 		if profile.Spec.Selector != nil {
 			selector, err := meta_api.LabelSelectorAsSelector(profile.Spec.Selector)
@@ -97,8 +105,8 @@ func (s *Interface) CreateIAMPolicyMember(profile *Profile, sa *core_api.Service
 			"metadata": map[string]interface{}{
 				"name": fmt.Sprintf("%s-%s-%s", profile.ObjectMeta.Name, sa.ObjectMeta.Namespace, sa.ObjectMeta.Name),
 				"labels": map[string]interface{}{
-					gcpworkload_api.ProfileKey.String(): profile.ObjectMeta.Name,
-					gcpworkload_api.WatchKey.String():   "true",
+					gcpworkload_api.ProfilesKey.String(): profile.ObjectMeta.Name,
+					gcpworkload_api.WatchKey.String():    "true",
 				},
 			},
 			"spec": map[string]interface{}{

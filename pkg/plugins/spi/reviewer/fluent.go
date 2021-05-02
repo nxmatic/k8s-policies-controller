@@ -94,7 +94,7 @@ func Given(logger logr.Logger, k8s *k8s.Interface) *GivenStage {
 
 func (g *GivenStage) Request(request *admission_api.AdmissionRequest) *GivenStage {
 	g.AdmissionRequest = request
-	g.Logger = g.Logger.WithValues("kind", g.AdmissionRequest.RequestKind)
+	g.Logger = g.Logger.WithValues("kind", g.RequestKind, "namespace", g.AdmissionRequest.Namespace, "name", g.AdmissionRequest.Name)
 	return g
 }
 
@@ -138,10 +138,14 @@ func (s *RequestedObjectStage) NamespaceIsNot(name string) *RequestedObjectStage
 	return s
 }
 
-func (s *RequestedObjectStage) IsNotNull() *RequestedObjectStage {
+func (s *RequestedObjectStage) IsValid() *RequestedObjectStage {
+	if s.Operation == admission_api.Delete {
+		return s
+	}
 	if s.AdmissionRequest.Object.Raw == nil {
 		s.Allow(errors.New("Request object raw is nil"))
 	}
+
 	return s
 }
 

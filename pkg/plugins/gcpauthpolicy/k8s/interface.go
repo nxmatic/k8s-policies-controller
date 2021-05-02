@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"regexp"
 	"strings"
 
 	errors_api "k8s.io/apimachinery/pkg/api/errors"
@@ -28,13 +29,11 @@ type (
 	Spec    = gcpauth_api.ProfileSpec
 	Status  = gcpauth_api.ProfileStatus
 
-	TypeValue = gcpauth_api.TypeValue
-	KeyValue  = gcpauth_api.KeyValue
+	KeyValue = gcpauth_api.KeyValue
 )
 
 const (
-	ProfileKey               = gcpauth_api.ProfileKey
-	ImagePullSecretTypeValue = gcpauth_api.ImagePullSecretTypeValue
+	ProfileKey = gcpauth_api.ProfilesKey
 )
 
 var (
@@ -55,11 +54,18 @@ func NewInterface(client dynamic.Interface) (*Interface, error) {
 }
 
 func (s *Interface) ResolveProfile(namespace *meta_api.ObjectMeta, resource *meta_api.ObjectMeta) (*gcpauth_api.Profile, error) {
-	names := s.MergeAnnotation(gcpauth_api.ProfileKey.String(), resource, namespace, s.DefaultMeta)
+	names := s.MergeAnnotation(gcpauth_api.ProfilesKey.String(), resource, namespace, s.DefaultMeta)
 	for _, name := range names {
 		profile, err := s.GetProfile(name)
 		if err != nil {
 			return nil, errors.New("cannot retrieve profile " + name)
+		}
+		if profile.Spec.Namespaces != "" {
+			if ok, err := regexp.MatchString(profile.Spec.Namespaces, namespace.Name); err != nil {
+				return nil, errors.New("Cannot evaluate " + profile.Spec.Namespaces + " from profile " + profile.Name)
+			} else if !ok {
+				continue
+			}
 		}
 		if profile.Spec.Selector != nil {
 			selector, err := meta_api.LabelSelectorAsSelector(profile.Spec.Selector)

@@ -1,7 +1,8 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 commonLabels:
-  app.kubernetes.io/instance: nodepolicyprofile
+  app.kubernetes.io/instance: node
+  app.kubernetes.io/component: controller
 resources:
 - nodepolicyprofile-controller-certificate.yaml
 - nodepolicyprofile-controller-clusterrole.yaml

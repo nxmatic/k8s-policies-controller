@@ -3,12 +3,11 @@ package reviewer
 import (
 	"encoding/json"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/k8s"
-
 	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/apis/gcpworkloadpolicyprofile/v1alpha1"
 	admission_api "k8s.io/api/admission/v1"
 	core_api "k8s.io/api/core/v1"
 
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/k8s"
 	spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
 )
 
@@ -32,104 +31,105 @@ func Given() *RequestedServiceAccountStage {
 	return &RequestedServiceAccountStage{}
 }
 
-func (s *RequestedServiceAccountStage) RequestedObject(o *spi.GivenStage) *RequestedServiceAccountStage {
-	s.GivenStage = o
-	s.Interface = o.ConcreteRef.(*k8s.Interface)
-	return s
+func (stage *RequestedServiceAccountStage) RequestedObject(o *spi.GivenStage) *RequestedServiceAccountStage {
+	stage.GivenStage = o
+	stage.Interface = o.ConcreteRef.(*k8s.Interface)
+	return stage
 }
 
-func (s *RequestedServiceAccountStage) The() *RequestedServiceAccountStage {
-	return s
+func (stage *RequestedServiceAccountStage) The() *RequestedServiceAccountStage {
+	return stage
 }
 
-func (s *RequestedServiceAccountStage) And() *RequestedServiceAccountStage {
-	return s
+func (stage *RequestedServiceAccountStage) And() *RequestedServiceAccountStage {
+	return stage
 }
 
 func (r *RequestedServiceAccountStage) RequestedKind() *RequestedKindStage {
 	return &RequestedKindStage{r}
 }
 
-func (s *RequestedKindStage) Or() *RequestedKindStage {
-	return s
+func (stage *RequestedKindStage) Or() *RequestedKindStage {
+	return stage
 }
 
-func (s *RequestedKindStage) IsAServiceAccount() *RequestedKindStage {
-	err := json.Unmarshal(s.AdmissionRequest.Object.Raw, &s.ServiceAccount)
+func (stage *RequestedKindStage) IsAServiceAccount() *RequestedKindStage {
+	if stage.Object.Raw == nil {
+		return stage
+	}
+	err := json.Unmarshal(stage.AdmissionRequest.Object.Raw, &stage.ServiceAccount)
 	if err != nil {
-		s.Allow(nil)
-		return s
+		stage.Allow(nil)
+		return stage
 	}
-	s.Logger = s.Logger.WithValues("name", s.ServiceAccount.ObjectMeta.Name)
-
-	return s
+	return stage
 }
 
-func (s *RequestedKindStage) End() *RequestedServiceAccountStage {
-	return s.RequestedServiceAccountStage
+func (stage *RequestedKindStage) End() *RequestedServiceAccountStage {
+	return stage.RequestedServiceAccountStage
 }
 
-func (s *RequestedServiceAccountStage) RequestedProfile() *RequestedProfileStage {
-	return &RequestedProfileStage{s, nil}
+func (stage *RequestedServiceAccountStage) RequestedProfile() *RequestedProfileStage {
+	return &RequestedProfileStage{stage, nil}
 }
 
-func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
-	if !s.CanContinue() {
-		return s
+func (stage *RequestedProfileStage) Applies() *RequestedProfileStage {
+	if !stage.CanContinue() {
+		return stage
 	}
 
-	if _, ok := s.ServiceAccount.ObjectMeta.Annotations["iam.gke.io/gcp-service-account"]; ok {
-		s.Allow(nil)
-		return s
+	if _, ok := stage.ServiceAccount.ObjectMeta.Annotations["iam.gke.io/gcp-service-account"]; ok {
+		stage.Allow(nil)
+		return stage
 	}
 
-	s.Namespace, s.Error = s.Interface.GetNamespace(s.AdmissionRequest.Namespace)
-	if s.Error != nil {
-		s.Allow(s.Error)
-		return s
+	stage.Namespace, stage.Error = stage.Interface.GetNamespace(stage.AdmissionRequest.Namespace)
+	if stage.Error != nil {
+		stage.Allow(stage.Error)
+		return stage
 	}
 
-	profile, err := s.Interface.ResolveProfile(&s.Namespace.ObjectMeta, &s.ServiceAccount.ObjectMeta)
+	profile, err := stage.Interface.ResolveProfile(&stage.Namespace.ObjectMeta, &stage.ServiceAccount.ObjectMeta)
 	if err != nil {
-		s.Allow(err)
-		return s
+		stage.Allow(err)
+		return stage
 	}
-	s.Profile = *profile
+	stage.Profile = *profile
 
-	switch s.Operation {
+	switch stage.Operation {
 	case admission_api.Create:
-		s.Error = s.Interface.CreateIAMPolicyMember(&s.Profile, &s.ServiceAccount)
-		if s.Error != nil {
-			s.Fail(s.Error)
-			return s
+		stage.Error = stage.Interface.CreateIAMPolicyMember(&stage.Profile, &stage.ServiceAccount)
+		if stage.Error != nil {
+			stage.Fail(stage.Error)
+			return stage
 		}
 	case admission_api.Delete:
-		s.Error = s.Interface.DeleteIAMPolicyMember(&s.Profile, &s.ServiceAccount)
-		s.Allow(s.Error)
+		stage.Error = stage.Interface.DeleteIAMPolicyMember(&stage.Profile, &stage.ServiceAccount)
+		stage.Allow(stage.Error)
 	}
 
-	s.Logger = s.Logger.WithValues("profile", s.Profile.ObjectMeta.Name)
+	stage.Logger = stage.Logger.WithValues("profile", stage.Profile.ObjectMeta.Name)
 
-	return s
+	return stage
 }
 
-func (s *RequestedProfileStage) And() *RequestedProfileStage {
-	return s
+func (stage *RequestedProfileStage) And() *RequestedProfileStage {
+	return stage
 }
 
-func (s *RequestedProfileStage) The() *RequestedProfileStage {
-	return s
+func (stage *RequestedProfileStage) The() *RequestedProfileStage {
+	return stage
 }
 
-func (s *RequestedProfileStage) End() *RequestedServiceAccountStage {
-	return s.RequestedServiceAccountStage
+func (stage *RequestedProfileStage) End() *RequestedServiceAccountStage {
+	return stage.RequestedServiceAccountStage
 }
 
-func (s *RequestedServiceAccountStage) End() *spi.WhenStage {
+func (stage *RequestedServiceAccountStage) End() *spi.WhenStage {
 	return &spi.WhenStage{
-		GivenStage: s.GivenStage,
+		GivenStage: stage.GivenStage,
 		Patcher: &serviceaccountPatcher{
-			ServiceAccount: &s.ServiceAccount,
-			Profile:        &s.Profile,
+			ServiceAccount: &stage.ServiceAccount,
+			Profile:        &stage.Profile,
 		}}
 }

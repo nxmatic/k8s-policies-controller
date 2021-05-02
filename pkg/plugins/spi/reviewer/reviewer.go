@@ -36,7 +36,7 @@ func (r *AdmissionReviewer) PerformAdmissionReview(request *admission_api.Admiss
 		A().Request(request).And().
 		The().RequestedObject().
 		NamespaceIsNot(meta_api.NamespaceSystem).And().
-		IsNotNull().End().
+		IsValid().End().
 		When(r.Hook).
 		I().PatchTheRequest().
 		Then().

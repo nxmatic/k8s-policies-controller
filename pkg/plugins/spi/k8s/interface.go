@@ -22,8 +22,11 @@ type (
 
 var (
 	PodsResource            = core_api.SchemeGroupVersion.WithResource("pods")
+	PodsKind                = core_api.SchemeGroupVersion.WithKind("Pod")
 	NamespacesResource      = core_api.SchemeGroupVersion.WithResource("namespaces")
+	NamespacesKind          = core_api.SchemeGroupVersion.WithKind("Namespace")
 	ServiceaccountsResource = core_api.SchemeGroupVersion.WithResource("serviceaccounts")
+	ServiceaccountsKind     = core_api.SchemeGroupVersion.WithKind("Serviceaccount")
 )
 
 func NewInterface(base dynamic.Interface) (*Interface, error) {
@@ -76,6 +79,9 @@ func (k8s *Interface) MergeAnnotation(key string, metas ...*meta_api.ObjectMeta)
 	exists := struct{}{}
 	set := make(map[string]struct{})
 	for _, meta := range metas {
+		if meta == nil {
+			continue
+		}
 		if value, ok := meta.Annotations[key]; ok {
 			for _, name := range strings.Split(value, ",") {
 				name = strings.TrimSpace(name)

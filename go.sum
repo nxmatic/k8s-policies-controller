@@ -53,6 +53,8 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802 h1:1BDTz0u9nC3//pOC
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/GoogleCloudPlatform/k8s-config-connector v1.42.0 h1:pQ9D0Entkcfz4zcDXCsOFyo2mRbNU//gZBwboBgI3Jk=
 github.com/GoogleCloudPlatform/k8s-config-connector v1.42.0/go.mod h1:nP2y9jmLnJvZQdO5vxbH6Q/aLRC8Xu5rp5VakRS9WfY=
+github.com/GoogleCloudPlatform/k8s-config-connector v1.49.0 h1:rj8nHKeNxckwh1txP242kSapVpFzSJzLJlkJifk99Ec=
+github.com/GoogleCloudPlatform/k8s-config-connector v1.49.0/go.mod h1:nP2y9jmLnJvZQdO5vxbH6Q/aLRC8Xu5rp5VakRS9WfY=
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46 h1:lsxEuwrXEAokXB9qhlbKWPpo3KMLZQ5WB5WLQRW1uq0=
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46/go.mod h1:3wb06e3pkSAbeQ52E9H9iFoQsEEwGN64994WTCIhntQ=
 github.com/OneOfOne/xxhash v1.2.2 h1:KMrpdQIwFcEqXDklaen+P1axHaj9BSKzvpUUfnHldSE=

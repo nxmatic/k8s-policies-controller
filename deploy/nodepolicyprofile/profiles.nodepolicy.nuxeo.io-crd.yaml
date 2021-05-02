@@ -34,6 +34,8 @@ spec:
         spec:
           description: ProfileSpec defines the desired state of NodePolicyProfile
           properties:
+            namespaceSelector:
+              type: string
             nodeAffinity:
               description: Node affinity is a group of node affinity scheduling rules.
               properties:

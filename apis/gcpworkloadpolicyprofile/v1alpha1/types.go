@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	ProfileKey KeyValue = "gcpworkloadpolicy.nuxeo.io/profile"
-	TypeKey    KeyValue = "gcpworkloadpolicy.nuxeo.io/type"
-	WatchKey   KeyValue = "gcpworkloadpolicy.nuxeo.io/watch"
+	ProfilesKey KeyValue = "gcpworkloadpolicy.nuxeo.io/profiles"
+	TypeKey     KeyValue = "gcpworkloadpolicy.nuxeo.io/type"
+	WatchKey    KeyValue = "gcpworkloadpolicy.nuxeo.io/watch"
 )
 
 var (
@@ -65,9 +65,10 @@ type Profile struct {
 }
 
 type ProfileSpec struct {
+	Namespaces     string                  `json:"namespaces,omitempty"`
+	Selector       *meta_api.LabelSelector `json:"selector,omitempty"`
 	ServiceAccount string                  `json:"serviceaccount"`
 	Project        string                  `json:"project"`
-	Selector       *meta_api.LabelSelector `json:"selector,omitempty"`
 }
 
 // +kubebuilder:object:root=true

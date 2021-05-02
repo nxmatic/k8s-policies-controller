@@ -11,16 +11,28 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
 
+const (
+	ProfileKey KeyValue = "nodepolicy.nuxeo.io/profile"
+	TypeKey    KeyValue = "nodepolicy.nuxeo.io/type"
+	WatchKey   KeyValue = "nodepolicy.nuxeo.io/watch"
+)
+
 var (
-	// GroupVersion is group version used to register these objects
-	GroupVersion = schema.GroupVersion{Group: "nodepolicy.nuxeo.io", Version: "v1alpha1"}
+	// SchemeGroupVersion is group version used to register these objects
+	SchemeGroupVersion = schema.GroupVersion{Group: "nodepolicy.nuxeo.io", Version: "v1alpha1"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
-	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}
+	SchemeBuilder = &scheme.Builder{GroupVersion: SchemeGroupVersion}
 
 	// AddToScheme adds the types in this group-version to the given scheme.
 	AddToScheme = SchemeBuilder.AddToScheme
 )
+
+type KeyValue string
+
+func (name KeyValue) String() string {
+	return string(name)
+}
 
 // ResourceName typed gcpauth resource identifiers
 type ResourceName string
@@ -29,9 +41,20 @@ func (name ResourceName) String() string {
 	return string(name)
 }
 
+type ResourceKind string
+
+func (name ResourceKind) String() string {
+	return string(name)
+}
+
+const (
+	ProfileKind ResourceKind = "Profile"
+)
+
 var (
 	NodepolicyprofilesResource = SchemeBuilder.GroupVersion.WithResource("profiles")
 	PodsResource               = core_api.SchemeGroupVersion.WithResource("pods")
+	NamespacesResource         = core_api.SchemeGroupVersion.WithResource("namespaces")
 )
 
 // AnnotationName typed gcpauth annotation identifiers
@@ -42,7 +65,7 @@ func (name AnnotationName) String() string {
 }
 
 const (
-	AnnotationPolicyProfile AnnotationName = "nodepolicy.nuxeo.io/profile"
+	AnnotationPolicyProfiles AnnotationName = "nodepolicy.nuxeo.io/profiles"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -50,10 +73,11 @@ const (
 
 // ProfileSpec defines the desired state of NodePolicyProfile
 type ProfileSpec struct {
+	Namespaces   string                  `json:"namespaceSelector,omitempty"`
+	PodSelector  *meta_api.LabelSelector `json:"podSelector,omitempty"`
 	Tolerations  []core_api.Toleration   `json:"tolerations,omitempty"`
 	NodeAffinity core_api.NodeAffinity   `json:"nodeAffinity,omitempty"`
 	NodeSelector map[string]string       `json:"nodeSelector,omitempty"`
-	PodSelector  *meta_api.LabelSelector `json:"podSelector,omitempty"`
 }
 
 // ProfileStatus defines the observed state of NodePolicyProfile

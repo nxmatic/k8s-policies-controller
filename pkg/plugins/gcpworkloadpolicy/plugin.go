@@ -1,14 +1,16 @@
 package gcpworkloadpolicy
 
 import (
-	iam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
+	gcpiam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
 	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/apis/gcpworkloadpolicyprofile/v1alpha1"
 
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/k8s"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/reconciler"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/reviewer"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
+	namespace_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/namespace"
 	reviewer_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
+
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -45,7 +47,7 @@ func (p *plugin) Add(manager manager.Manager, client dynamic.Interface) error {
 	if err := gcpworkload_api.SchemeBuilder.AddToScheme(scheme); err != nil {
 		return errors.Wrap(err, "failed to load gcpworkloadpolicyprofile scheme")
 	}
-	if err := iam_api.SchemeBuilder.AddToScheme(scheme); err != nil {
+	if err := gcpiam_api.SchemeBuilder.AddToScheme(scheme); err != nil {
 		return errors.Wrap(err, "failed to load gcpworkloadpolicyprofile scheme")
 	}
 	if err := core_api.SchemeBuilder.AddToScheme(scheme); err != nil {
@@ -56,6 +58,7 @@ func (p *plugin) Add(manager manager.Manager, client dynamic.Interface) error {
 		return errors.Wrap(err, "cannot acquire k8s interface")
 	}
 	reconciler.Add(manager, k8s)
+	namespace_spi.Add(_name, manager, &k8s.Interface)
 	reviewer_spi.Add(_name, manager, &k8s.Interface, _hooks)
 	return nil
 }

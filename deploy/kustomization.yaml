@@ -6,5 +6,4 @@ resources:
 - gcpauthpolicyprofile
 - gcpworkloadpolicyprofile
 - nodepolicyprofile
-components:
 - namespace

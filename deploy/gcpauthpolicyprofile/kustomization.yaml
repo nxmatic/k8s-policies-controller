@@ -1,7 +1,8 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 commonLabels:
-  app.kubernetes.io/instance: gcpauthpolicyprofile
+  app.kubernetes.io/instance: gcpauth
+  app.kubernetes.io/component: controller
 resources:
 - gcpauthpolicyprofile-controller-certificate.yaml
 - gcpauthpolicyprofile-controller-clusterrole.yaml

@@ -11,11 +11,9 @@ import (
 )
 
 const (
-	ProfileKey KeyValue = "gcpauthpolicy.nuxeo.io/profile"
-	TypeKey    KeyValue = "gcpauthpolicy.nuxeo.io/type"
-	WatchKey   KeyValue = "gcpauthpolicy.nuxeo.io/watch"
-
-	ImagePullSecretTypeValue TypeValue = "ImagePullSecret"
+	ProfilesKey KeyValue = "gcpauthpolicy.nuxeo.io/profiles"
+	TypeKey     KeyValue = "gcpauthpolicy.nuxeo.io/type"
+	WatchKey    KeyValue = "gcpauthpolicy.nuxeo.io/watch"
 )
 
 var (
@@ -48,12 +46,6 @@ func (name KeyValue) String() string {
 	return string(name)
 }
 
-type TypeValue string
-
-func (name TypeValue) String() string {
-	return string(name)
-}
-
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster
 
@@ -67,8 +59,9 @@ type Profile struct {
 }
 
 type ProfileSpec struct {
-	Datasource SecretRef               `json:"datasource,omitempty"`
+	Namespaces string                  `json:"namespaces,omitempty"`
 	Selector   *meta_api.LabelSelector `json:"selector,omitempty"`
+	Datasource SecretRef               `json:"datasource,omitempty"`
 }
 
 type SecretRef struct {

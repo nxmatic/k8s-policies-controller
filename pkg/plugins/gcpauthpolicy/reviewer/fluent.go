@@ -8,9 +8,6 @@ import (
 
 	gcpauth_api "github.com/nuxeo/k8s-policy-controller/apis/gcpauthpolicyprofile/v1alpha1"
 	core_api "k8s.io/api/core/v1"
-	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"k8s.io/apimachinery/pkg/labels"
 
 	spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
 )
@@ -93,20 +90,6 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 		return s
 	}
 	s.Profile = *profile
-
-	if s.Profile.Spec.Selector != nil {
-		selector, err := meta_api.LabelSelectorAsSelector(s.Profile.Spec.Selector)
-		if err != nil {
-			s.Error = err
-			s.Allow(nil)
-			return s
-		}
-		if !selector.Matches(labels.Set(s.ServiceAccount.Labels)) {
-			s.Allow(nil)
-			return s
-		}
-	}
-
 	s.Logger = s.Logger.WithValues("profile", s.Profile.ObjectMeta.Name)
 
 	return s

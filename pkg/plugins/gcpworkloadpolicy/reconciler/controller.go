@@ -1,15 +1,17 @@
 package reconciler
 
 import (
+	gcp_iam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
 	gcpworkloadpolicy_api "github.com/nuxeo/k8s-policy-controller/apis/gcpworkloadpolicyprofile/v1alpha1"
-
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/k8s"
-
 	"github.com/pkg/errors"
+	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
@@ -40,6 +42,31 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		},
 	}
 	err = c.Watch(profileResource, &decorator)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	predicate, err := predicate.LabelSelectorPredicate(
+		meta_api.LabelSelector{
+			MatchLabels: map[string]string{
+				gcpworkloadpolicy_api.WatchKey.String(): "true",
+			}})
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	// Watch for changes to patched gcp IAMPolicyMember
+
+	iamPolicyMemberResource := &source.Kind{
+		Type: &gcp_iam_api.IAMPolicyMember{
+			TypeMeta: meta_api.TypeMeta{
+				APIVersion: core_api.SchemeGroupVersion.String(),
+				Kind:       "Secrets",
+			},
+		},
+	}
+
+	err = c.Watch(iamPolicyMemberResource, &enqueueRequestForOwner{}, predicate)
 	if err != nil {
 		return errors.WithStack(err)
 	}

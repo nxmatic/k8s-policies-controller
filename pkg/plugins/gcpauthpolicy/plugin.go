@@ -7,6 +7,7 @@ import (
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauthpolicy/reconciler"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauthpolicy/reviewer"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
+	namespace_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/namespace"
 	reviewer_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
@@ -53,6 +54,7 @@ func (p *plugin) Add(manager manager.Manager, client dynamic.Interface) error {
 	}
 
 	reconciler.Add(manager, k8s)
+	namespace_spi.Add(_name, manager, &k8s.Interface)
 	reviewer_spi.Add(_name, manager, &k8s.Interface, _hooks)
 	return nil
 }

@@ -12,6 +12,8 @@ rules:
   - namespaces
   verbs:
   - get
+  - list
+  - watch
 - apiGroups:
   - nodepolicy.nuxeo.io
   resources:

@@ -43,7 +43,7 @@ func (p *patcher) addLabelProfilePatch() []reviewer.PatchOperation {
 }
 
 func (p *patcher) addNodeProfilePatch() []reviewer.PatchOperation {
-	_, ok := p.Pod.Annotations[nodepolicy_api.AnnotationPolicyProfile.String()]
+	_, ok := p.Pod.Annotations[nodepolicy_api.AnnotationPolicyProfiles.String()]
 	if ok {
 		return p.Patch
 	}

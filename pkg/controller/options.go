@@ -14,9 +14,14 @@ type (
 		MetricsAddr          string
 		EnableLeaderElection bool
 		PolicyOption
+		NamespaceOption
 	}
 
 	PolicyOption struct {
+		value string
+	}
+
+	NamespaceOption struct {
 		value string
 	}
 )
@@ -46,7 +51,7 @@ func (o *PolicyOption) String() string {
 
 func (o *PolicyOption) Set(value string) error {
 	if !plugins.SupportPolicy(value) {
-		return fmt.Errorf("Unsupported kind %s, available options are %s", value, plugins.Policies())
+		return fmt.Errorf("unsupported kind %s, available options are %s", value, plugins.Policies())
 	}
 	o.value = value
 

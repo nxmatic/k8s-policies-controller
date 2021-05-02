@@ -10,7 +10,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-        test: nodepolicyprofile-controller
+      nodepolicyprofile/test: "true"
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,7 +20,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        test: nodepolicyprofile-controller
+        nodepolicyprofile/test: "true"
     spec:
       containers:
         - command: ["/usr/bin/env", "tail", "-f", "/dev/null"]

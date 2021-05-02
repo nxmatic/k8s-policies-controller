@@ -10,7 +10,9 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      devpod: nodepolicyprofile-controller
+      app.kubernetes.io/instance: nodepolicyprofile
+      app.kubernetes.io/name: k8s-policy-controller
+      kapp.k14s.io/app: "1619191709372783000"
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,14 +21,15 @@ spec:
   template:
     metadata:
       labels:
-        devpod: nodepolicyprofile-controller
         app.kubernetes.io/instance: nodepolicyprofile
         app.kubernetes.io/name: k8s-policy-controller
+        kapp.k14s.io/app: "1619191709372783000"
     spec:
       containers:
         - image: golang:1.14-buster
           imagePullPolicy: Always
           name: dev
+          command: [ "/usr/bin/tail", "-f", "/dev/null"]
           ports:
             - containerPort: 9443
               name: webhook-server

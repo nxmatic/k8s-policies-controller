@@ -27,6 +27,7 @@ spec:
         - image: golang:1.14-buster
           imagePullPolicy: Always
           name: dev
+          command: ["/usr/bin/tail", "-f", "/dev/null"]
           ports:
             - containerPort: 9443
               name: webhook-server

@@ -2,29 +2,29 @@ package reviewer
 
 import (
 	"github.com/go-logr/logr"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
 
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
 	admission_api "k8s.io/api/admission/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"k8s.io/client-go/dynamic"
 )
 
 type AdmissionReviewer struct {
 	meta_api.GroupVersionKind
 	*admission.Decoder
-	dynamic.Interface
-	Logger logr.Logger
+	*k8s.Interface
+	logr.Logger
 	Hook
+	meta_api.ObjectMeta
 }
 
 // NewAdmissionReviewer allocate a reviewer for processing requested reviews
-func NewAdmissionReviewer(hook Hook, service dynamic.Interface, logger logr.Logger) *AdmissionReviewer {
+func NewAdmissionReviewer(hook Hook, k8s *k8s.Interface, logger logr.Logger) *AdmissionReviewer {
 	return &AdmissionReviewer{
 		Hook:      hook,
-		Interface: service,
-		Logger:    logger.WithName("reviewer"),
+		Interface: k8s,
+		Logger:    logger,
 	}
 }
 

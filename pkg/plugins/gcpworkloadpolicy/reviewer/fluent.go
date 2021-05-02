@@ -34,7 +34,6 @@ func Given() *RequestedServiceAccountStage {
 
 func (s *RequestedServiceAccountStage) RequestedObject(o *spi.GivenStage) *RequestedServiceAccountStage {
 	s.GivenStage = o
-	s.Interface = k8s.Interface{Interface: o.Interface}
 	return s
 }
 

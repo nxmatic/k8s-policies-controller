@@ -14,6 +14,8 @@ import (
 type (
 	Interface struct {
 		dynamic.Interface
+		DefaultMeta *meta_api.ObjectMeta
+		ConcreteRef interface{}
 	}
 )
 
@@ -23,18 +25,28 @@ var (
 	ServiceaccountsResource = core_api.SchemeGroupVersion.WithResource("serviceaccounts")
 )
 
-func NewInterface(itf dynamic.Interface) *Interface {
-	return &Interface{
-		itf,
+func NewInterface(base dynamic.Interface) (*Interface, error) {
+	k8s := &Interface{
+		Interface: base,
 	}
+	defaultNS, err := k8s.GetNamespace("default")
+	if err != nil {
+		return nil, err
+	}
+	k8s.DefaultMeta = &defaultNS.ObjectMeta
+	return k8s, nil
 }
 
-func (f *Interface) NewReplicator() *Replicator {
-	return &Replicator{f.Interface}
+func (k8s *Interface) SetConcreteRef(ref interface{}) {
+	k8s.ConcreteRef = ref
 }
 
-func (f *Interface) GetNamespace(name string) (*core_api.Namespace, error) {
-	resp, err := f.Interface.Resource(NamespacesResource).Get(context.TODO(), name, meta_api.GetOptions{})
+func (k8s *Interface) NewReplicator() *Replicator {
+	return &Replicator{k8s.Interface}
+}
+
+func (k8s *Interface) GetNamespace(name string) (*core_api.Namespace, error) {
+	resp, err := k8s.Interface.Resource(NamespacesResource).Get(context.TODO(), name, meta_api.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +58,8 @@ func (f *Interface) GetNamespace(name string) (*core_api.Namespace, error) {
 	return namespace, nil
 }
 
-func (f *Interface) GetServiceAccount(name string, namespace string) (*core_api.ServiceAccount, error) {
-	resp, err := f.Interface.Resource(ServiceaccountsResource).Namespace(namespace).Get(context.TODO(), name, meta_api.GetOptions{})
+func (k8s *Interface) GetServiceAccount(name string, namespace string) (*core_api.ServiceAccount, error) {
+	resp, err := k8s.Interface.Resource(ServiceaccountsResource).Namespace(namespace).Get(context.TODO(), name, meta_api.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +71,7 @@ func (f *Interface) GetServiceAccount(name string, namespace string) (*core_api.
 	return serviceaccount, nil
 }
 
-func (f *Interface) MergeAnnotations(accumulator map[string]string, meta *meta_api.ObjectMeta) map[string]string {
+func (k8s *Interface) MergeAnnotations(accumulator map[string]string, meta *meta_api.ObjectMeta) map[string]string {
 	annotations := meta.Annotations
 	if annotations == nil {
 		return accumulator

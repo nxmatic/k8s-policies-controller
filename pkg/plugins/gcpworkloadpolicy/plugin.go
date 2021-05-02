@@ -4,6 +4,7 @@ import (
 	iam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
 	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/apis/gcpworkloadpolicyprofile/v1alpha1"
 
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/k8s"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/reconciler"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy/reviewer"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
@@ -50,9 +51,12 @@ func (p *plugin) Add(manager manager.Manager, client dynamic.Interface) error {
 	if err := core_api.SchemeBuilder.AddToScheme(scheme); err != nil {
 		return errors.Wrap(err, "failed to load core scheme")
 	}
-
-	reconciler.Add(manager, client)
-	reviewer_spi.Add(_name, manager, client, _hooks)
+	k8s, err := k8s.NewInterface(client)
+	if err != nil {
+		return errors.Wrap(err, "cannot acquire k8s interface")
+	}
+	reconciler.Add(manager, k8s)
+	reviewer_spi.Add(_name, manager, &k8s.Interface, _hooks)
 	return nil
 }
 

@@ -4,6 +4,7 @@ import (
 	nodepolicy_api "github.com/nuxeo/k8s-policy-controller/apis/nodepolicyprofile/v1alpha1"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/nodepolicy/reviewer"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
 	reviewer_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
@@ -45,7 +46,11 @@ func (p *plugin) Add(manager manager.Manager, client dynamic.Interface) error {
 	if err := core_api.SchemeBuilder.AddToScheme(scheme); err != nil {
 		return errors.Wrap(err, "failed to load core scheme")
 	}
-	reviewer_spi.Add(_name, manager, client, _hooks)
+	k8s, err := k8s.NewInterface(client)
+	if err != nil {
+		return errors.Wrap(err, "failed to acquire k8s interface")
+	}
+	reviewer_spi.Add(_name, manager, k8s, _hooks)
 	return nil
 }
 

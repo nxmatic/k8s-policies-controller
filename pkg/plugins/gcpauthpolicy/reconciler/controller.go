@@ -7,7 +7,6 @@ import (
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/dynamic"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -16,9 +15,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
-func Add(mgr manager.Manager, client dynamic.Interface) error {
+func Add(mgr manager.Manager, k8s *k8s.Interface) error {
 	reconciler := &reconciler{
-		k8s.NewInterface(client),
+		k8s,
 	}
 	return add(mgr, reconciler)
 }

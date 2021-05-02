@@ -4,26 +4,24 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	admission_api "k8s.io/api/admission/v1"
-	"k8s.io/client-go/dynamic"
 
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
 )
 
-type responseType int8
-
 const (
-	proceed   responseType = iota
-	allowed   responseType = iota
-	failure   responseType = iota
-	jsonpatch responseType = iota
+	proceed   ResponseType = iota
+	allowed   ResponseType = iota
+	failure   ResponseType = iota
+	jsonpatch ResponseType = iota
 )
 
 type (
+	ResponseType int8
+
 	BaseStage struct {
 		Error error
-		responseType
-
-		Logger logr.Logger
+		ResponseType
+		logr.Logger
 		*k8s.Interface
 	}
 
@@ -59,16 +57,16 @@ type (
  * Base
  */
 
-func (s *BaseStage) setResponseType(cause error, value responseType) *BaseStage {
+func (s *BaseStage) setResponseType(cause error, value ResponseType) *BaseStage {
 	if cause != nil {
 		s.Error = cause
 	}
-	s.responseType = value
+	s.ResponseType = value
 	return s
 }
 
 func (s *BaseStage) CanContinue() bool {
-	return s.responseType == proceed
+	return s.ResponseType == proceed
 }
 
 func (s *BaseStage) Allow(cause error) *BaseStage {
@@ -87,13 +85,11 @@ func (s *BaseStage) JsonPatch() *BaseStage {
  * Given
  */
 
-func Given(logger logr.Logger, itf dynamic.Interface) *GivenStage {
-	return &GivenStage{
-		BaseStage: BaseStage{
-			Logger:    logger,
-			Interface: k8s.NewInterface(itf),
-		},
-	}
+func Given(logger logr.Logger, k8s *k8s.Interface) *GivenStage {
+	given := GivenStage{}
+	given.Logger = logger
+	given.Interface = k8s
+	return &given
 }
 
 func (g *GivenStage) Request(request *admission_api.AdmissionRequest) *GivenStage {
@@ -231,7 +227,7 @@ func (t *ThenStage) End() *EndStage {
 }
 
 func (e *EndStage) Response() *admission_api.AdmissionResponse {
-	switch e.responseType {
+	switch e.ResponseType {
 	case allowed:
 		e.Logger.Info("allowing")
 		return newAllowedResponse(e.AdmissionRequest, e.Error)

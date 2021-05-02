@@ -21,7 +21,7 @@ import (
 
 type (
 	Interface struct {
-		*k8s_spi.Interface
+		k8s_spi.Interface
 	}
 
 	Profile = gcpworkload_api.Profile
@@ -41,10 +41,16 @@ var (
 	ProfilesResource         = gcpworkload_api.ProfilesResource
 )
 
-func NewInterface(client dynamic.Interface) *Interface {
-	return &Interface{
-		k8s_spi.NewInterface(client),
+func NewInterface(client dynamic.Interface) (*Interface, error) {
+	spi, err := k8s_spi.NewInterface(client)
+	if err != nil {
+		return nil, err
 	}
+	k8s := &Interface{
+		Interface: *spi,
+	}
+	k8s.SetConcreteRef(k8s)
+	return k8s, nil
 }
 
 func (s *Interface) ResolveProfile(namespace *meta_api.ObjectMeta, resource *meta_api.ObjectMeta) (*gcpworkload_api.Profile, error) {

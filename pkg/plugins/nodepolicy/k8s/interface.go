@@ -18,7 +18,7 @@ var (
 )
 
 type Interface struct {
-	*spi.Interface
+	spi.Interface
 }
 
 func (s *Interface) ResolveProfile(namespace *meta_api.ObjectMeta, resource *meta_api.ObjectMeta) (*nodepolicy_api.Profile, error) {
@@ -42,6 +42,9 @@ func (s *Interface) ResolveProfile(namespace *meta_api.ObjectMeta, resource *met
 			}
 			return profile, nil
 		}
+	}
+	if namespace.Name != "default" {
+		return s.ResolveProfile(s.DefaultMeta, resource)
 	}
 	return nil, errors.New("no profile")
 }

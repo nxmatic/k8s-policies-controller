@@ -15,7 +15,7 @@ import (
 
 type (
 	RequestedPodStage struct {
-		k8s.Interface
+		*k8s.Interface
 		*reviewer_spi.GivenStage
 		*core_api.Pod
 		Profile *nodepolicy_api.Profile
@@ -37,6 +37,7 @@ func Given() *RequestedPodStage {
 
 func (s *RequestedPodStage) RequestedObject(o *reviewer_spi.GivenStage) *RequestedPodStage {
 	s.GivenStage = o
+	s.Interface = o.ConcreteRef.(*k8s.Interface)
 	return s
 }
 

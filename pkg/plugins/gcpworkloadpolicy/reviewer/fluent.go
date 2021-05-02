@@ -14,7 +14,7 @@ import (
 
 type (
 	RequestedServiceAccountStage struct {
-		k8s.Interface
+		*k8s.Interface
 		*spi.GivenStage
 		core_api.ServiceAccount
 		gcpworkload_api.Profile
@@ -34,6 +34,7 @@ func Given() *RequestedServiceAccountStage {
 
 func (s *RequestedServiceAccountStage) RequestedObject(o *spi.GivenStage) *RequestedServiceAccountStage {
 	s.GivenStage = o
+	s.Interface = o.ConcreteRef.(*k8s.Interface)
 	return s
 }
 

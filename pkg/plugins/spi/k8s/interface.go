@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"strings"
 
 	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -71,13 +72,22 @@ func (k8s *Interface) GetServiceAccount(name string, namespace string) (*core_ap
 	return serviceaccount, nil
 }
 
-func (k8s *Interface) MergeAnnotations(accumulator map[string]string, meta *meta_api.ObjectMeta) map[string]string {
-	annotations := meta.Annotations
-	if annotations == nil {
-		return accumulator
+func (k8s *Interface) MergeAnnotation(key string, metas ...*meta_api.ObjectMeta) []string {
+	exists := struct{}{}
+	set := make(map[string]struct{})
+	for _, meta := range metas {
+		if value, ok := meta.Annotations[key]; ok {
+			for _, name := range strings.Split(value, ",") {
+				name = strings.TrimSpace(name)
+				set[name] = exists
+			}
+		}
 	}
-	for k, v := range annotations {
-		accumulator[k] = v
+	names := make([]string, 0, len(set))
+	for name, _ := range set {
+		n := len(names)
+		names = names[0 : n+1]
+		names[n] = name
 	}
-	return accumulator
+	return names
 }

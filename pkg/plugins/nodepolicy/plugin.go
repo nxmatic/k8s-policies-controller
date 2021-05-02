@@ -2,9 +2,9 @@ package nodepolicy
 
 import (
 	nodepolicy_api "github.com/nuxeo/k8s-policy-controller/apis/nodepolicyprofile/v1alpha1"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/nodepolicy/k8s"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/nodepolicy/reviewer"
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
 	reviewer_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
@@ -50,7 +50,7 @@ func (p *plugin) Add(manager manager.Manager, client dynamic.Interface) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to acquire k8s interface")
 	}
-	reviewer_spi.Add(_name, manager, k8s, _hooks)
+	reviewer_spi.Add(_name, manager, &k8s.Interface, _hooks)
 	return nil
 }
 

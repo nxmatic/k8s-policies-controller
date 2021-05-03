@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: node-controller
+spec:
+  commonName: node-controller.policies.svc
+  dnsNames:
+  - node-controller.policies.svc
+  - node-controller.policies.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: policy-controller
+  secretName: node-controller-tls

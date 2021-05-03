@@ -4,7 +4,6 @@ import (
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
 
 	"github.com/pkg/errors"
-	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/rest"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -16,14 +15,9 @@ func NewManagerWithOptions(konfig *rest.Config, opts ctrl.Options, plugin spi.Pl
 		return nil, errors.Wrap(err, "failed to create manager")
 	}
 
-	client, err := dynamic.NewForConfig(konfig)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create dynamic interface")
-	}
-
 	opts.Logger.Info("Registering Components.")
 
-	plugin.Add(manager, client)
+	plugin.Add(manager)
 
 	return manager, nil
 }

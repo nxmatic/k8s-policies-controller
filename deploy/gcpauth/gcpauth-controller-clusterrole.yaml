@@ -1,0 +1,42 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: gcpauth-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - gcpauth.nuxeo.io
+  resources:
+  - profiles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - gcpauth.nuxeo.io
+  resources:
+  - profiles/status
+  verbs:
+  - get
+  - patch
+  - update

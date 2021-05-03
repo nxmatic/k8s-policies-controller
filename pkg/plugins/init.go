@@ -3,9 +3,9 @@ package plugins
 import (
 	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauthpolicy"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkloadpolicy"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/nodepolicy"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkload"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/node"
 )
 
 var (
@@ -25,9 +25,9 @@ func init() {
 		plugins:  make(map[string]spi.Plugin, size),
 		policies: make([]string, size),
 	}
-	registry.registerPlugin(gcpauthpolicy.SupplyPlugin)
-	registry.registerPlugin(gcpworkloadpolicy.SupplyPlugin)
-	registry.registerPlugin(nodepolicy.SupplyPlugin)
+	registry.registerPlugin(gcpauth.SupplyPlugin)
+	registry.registerPlugin(gcpworkload.SupplyPlugin)
+	registry.registerPlugin(node.SupplyPlugin)
 }
 
 func (r *Registry) registerPlugin(supplier spi.Supplier) {

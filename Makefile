@@ -42,7 +42,10 @@ deploy:  export IMAGE_GEN = $(APP):$(VERSION)
 all: dev
 
 .PHONY: build
-build: generate
+build: generate compile
+
+.PHONY: compile
+compile:
 	go mod download
 	GOARCH=${ARCH} go build -ldflags "$(LD_FLAGS)"
 
@@ -104,16 +107,16 @@ define newline :=
 endef
 
 .PHONY: generate
-generate: packages := gcpauthpolicyprofile gcpworkloadpolicyprofile nodepolicyprofile
+generate: packages := gcpauth gcpworkload node meta
 generate: script=$(generate.script)
 generate: | $(controller-gen.bin) $(jx-cli.bin) $(kustomize.bin)
 generate:
 	$(foreach package,$(packages),$(script))
 
 define generate.script =
-	$(controller-gen.bin) object paths=./apis/$(package)/...
-	$(controller-gen.bin) crd paths=./apis/$(package)/... output:crd:artifacts:config=deploy/$(package)
-	$(controller-gen.bin) rbac:roleName=$(package)-controller paths=./apis/$(package)/... output:rbac:artifacts:config=deploy/$(package)
+	$(controller-gen.bin) object paths=./pkg/apis/$(package)/...
+	$(controller-gen.bin) crd paths=./pkg/apis/$(package)/... output:crd:artifacts:config=deploy/$(package)
+	$(controller-gen.bin) rbac:roleName=$(package)-controller paths=./pkg/apis/$(package)/... output:rbac:artifacts:config=deploy/$(package)
 	$(jx-cli.bin) gitops rename --dir=deploy/$(package)
 $(newline)
 endef

@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gcpworkload-controller
+spec:
+  commonName: gcpworkload-controller.policies.svc
+  dnsNames:
+  - gcpworkload-controller.policies.svc
+  - gcpworkload-controller.policies.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: policy-controller
+  secretName: gcpworkload-controller-tls

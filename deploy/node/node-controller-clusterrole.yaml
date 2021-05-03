@@ -1,0 +1,36 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: node-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - node.profile.nuuxeo.io
+  resources:
+  - profiles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - node.profile.nuuxeo.io
+  resources:
+  - profiles/status
+  verbs:
+  - get
+  - patch
+  - update

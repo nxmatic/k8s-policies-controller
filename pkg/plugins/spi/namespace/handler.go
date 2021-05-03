@@ -22,7 +22,7 @@ func (e *namespaceDecorator) Create(evt event.CreateEvent, q workqueue.RateLimit
 
 func (e *namespaceDecorator) Update(evt event.UpdateEvent, q workqueue.RateLimitingInterface) {
 	if !reflect.DeepEqual(evt.ObjectOld.(*core_api.Namespace).ObjectMeta.Annotations, evt.ObjectNew.(*core_api.Namespace).ObjectMeta.Annotations) {
-		log.Log.WithValues("policy", evt.ObjectNew.GetName()).Info(
+		log.Log.WithValues("", evt.ObjectNew.GetName()).Info(
 			fmt.Sprintf("%T/%s has been updated", evt.ObjectNew, evt.ObjectNew.GetName()))
 	}
 	e.handler.Update(evt, q)

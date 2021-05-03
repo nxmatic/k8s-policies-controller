@@ -1,7 +1,6 @@
 package spi
 
 import (
-	"k8s.io/client-go/dynamic"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
@@ -10,6 +9,6 @@ type (
 
 	Plugin interface {
 		Name() string
-		Add(manager manager.Manager, client dynamic.Interface) error
+		Add(manager manager.Manager) error
 	}
 )

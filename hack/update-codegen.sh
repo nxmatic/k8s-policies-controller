@@ -26,11 +26,11 @@ CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-
 #                  k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
 #                  instead of the $GOPATH directly. For normal projects this can be dropped.
 bash -x "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
-  github.com/nuxeo/k8s-policy-controller/pkg/generated github.com/nuxeo/k8s-policy-controller/apis \
+  github.com/nuxeo/k8s-policy-controller/pkg/generated github.com/nuxeo/k8s-policy-controller/pkg/apis \
   gcpauth.nuxeo.io:v1alpha1 \
   --output-base "$(dirname "${BASH_SOURCE[0]}")/../../.." \
   --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt
 
-#  -v=10 
+#  -v=10
 # To use your own boilerplate text append:
 #   --go-header-file "${SCRIPT_ROOT}"/hack/custom-boilerplate.go.txt

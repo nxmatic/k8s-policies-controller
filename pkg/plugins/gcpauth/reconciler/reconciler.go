@@ -1,14 +1,12 @@
-package namespace
+package reconciler
 
 import (
 	"context"
 	"time"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
+	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth/k8s"
 
-	core_api "k8s.io/api/core/v1"
 	errors_api "k8s.io/apimachinery/pkg/api/errors"
-	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
@@ -21,26 +19,34 @@ type (
 
 var (
 	end            reconcile.Result = reconcile.Result{}
-	requeueOnError reconcile.Result = reconcile.Result{RequeueAfter: 10 * time.Second}
+	requeueOnError reconcile.Result = reconcile.Result{RequeueAfter: 5 * time.Minute}
 )
 
 func (r *reconciler) Reconcile(ctx context.Context, o reconcile.Request) (reconcile.Result, error) {
-	namespace, err := r.Interface.GetNamespace(o.Name)
+	profile, err := r.Interface.GetProfile(o.Name)
 	if err != nil {
 		if !errors_api.IsNotFound(err) {
 			return requeueOnError, err
 		}
 		return end, nil
 	}
-	return r.updateHandler(namespace)
+	return r.updateHandler(profile)
 }
 
 func (r *reconciler) deleteHandler(name string) (reconcile.Result, error) {
-	r.Interface.DefaultMeta = meta_api.ObjectMeta{}
+	err := r.DeleteImagePullSecret(name)
+	if err != nil {
+		if errors_api.IsNotFound(err) {
+			return end, nil
+		}
+		return requeueOnError, err
+	}
 	return end, nil
 }
 
-func (r *reconciler) updateHandler(namespace *core_api.Namespace) (reconcile.Result, error) {
-	r.Interface.DefaultMeta = namespace.ObjectMeta
+func (r *reconciler) updateHandler(profile *k8s.Profile) (reconcile.Result, error) {
+	if err := r.UpdateImagePullSecret(profile); err != nil {
+		return requeueOnError, err
+	}
 	return end, nil
 }

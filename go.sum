@@ -51,8 +51,6 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802 h1:1BDTz0u9nC3//pOCMdNH+CiXJVYJh5UQNCOBG7jbELc=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/GoogleCloudPlatform/k8s-config-connector v1.42.0 h1:pQ9D0Entkcfz4zcDXCsOFyo2mRbNU//gZBwboBgI3Jk=
-github.com/GoogleCloudPlatform/k8s-config-connector v1.42.0/go.mod h1:nP2y9jmLnJvZQdO5vxbH6Q/aLRC8Xu5rp5VakRS9WfY=
 github.com/GoogleCloudPlatform/k8s-config-connector v1.49.0 h1:rj8nHKeNxckwh1txP242kSapVpFzSJzLJlkJifk99Ec=
 github.com/GoogleCloudPlatform/k8s-config-connector v1.49.0/go.mod h1:nP2y9jmLnJvZQdO5vxbH6Q/aLRC8Xu5rp5VakRS9WfY=
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46 h1:lsxEuwrXEAokXB9qhlbKWPpo3KMLZQ5WB5WLQRW1uq0=
@@ -974,7 +972,6 @@ k8s.io/apimachinery v0.18.2/go.mod h1:9SnR/e11v5IbyPCGbvJViimtJ0SwHG4nfZFjU77ftc
 k8s.io/apimachinery v0.20.1/go.mod h1:WlLqWAHZGg07AeltaI0MV5uk1Omp8xaN0JGLY6gkRpU=
 k8s.io/apimachinery v0.20.2 h1:hFx6Sbt1oG0n6DZ+g4bFt5f6BoMkOjKWsQFu077M3Vg=
 k8s.io/apimachinery v0.20.2/go.mod h1:WlLqWAHZGg07AeltaI0MV5uk1Omp8xaN0JGLY6gkRpU=
-k8s.io/apimachinery v0.20.5 h1:wO/FxMVRn223rAKxnBbwCyuN96bS9MFTIvP0e/V7cps=
 k8s.io/apiserver v0.18.2/go.mod h1:Xbh066NqrZO8cbsoenCwyDJ1OSi8Ag8I2lezeHxzwzw=
 k8s.io/apiserver v0.20.1 h1:yEqdkxlnQbxi/3e74cp0X16h140fpvPrNnNRAJBDuBk=
 k8s.io/apiserver v0.20.1/go.mod h1:ro5QHeQkgMS7ZGpvf4tSMx6bBOgPfE+f52KwvXfScaU=

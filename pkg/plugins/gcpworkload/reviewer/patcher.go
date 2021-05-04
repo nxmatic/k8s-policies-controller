@@ -3,11 +3,11 @@ package reviewer
 import (
 	"fmt"
 
-	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpworkload/v1alpha1"
+	gcpworkload_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpworkload/v1alpha1"
 
 	core_api "k8s.io/api/core/v1"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/reviewer"
 )
 
 type serviceaccountPatcher struct {

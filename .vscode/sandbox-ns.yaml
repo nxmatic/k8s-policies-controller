@@ -3,9 +3,6 @@ kind: Namespace
 metadata:
   name: sandbox
   annotations:
-    nodepolicy.nuxeo.io/profile: stateless
-    gcpauthpolicy.nuxeo.io/profile: pfouh
-spec:
-  finalizers:
-  - kubernetes
-
+    node.policies.nuxeo.io/profile: policies-test
+    gcpauth.policies.nuxeo.io/profile: policies-test
+    gcpworkload.policies.nuxeo.io/profile: policies-test

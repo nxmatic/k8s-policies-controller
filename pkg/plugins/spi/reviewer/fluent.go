@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 	admission_api "k8s.io/api/admission/v1"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/k8s"
 )
 
 const (

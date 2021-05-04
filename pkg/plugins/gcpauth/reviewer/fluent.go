@@ -3,13 +3,13 @@ package reviewer
 import (
 	"encoding/json"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth/k8s"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpauth/k8s"
 	"github.com/pkg/errors"
 
-	gcpauth_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpauth/v1alpha1"
+	gcpauth_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpauth/v1alpha1"
 	core_api "k8s.io/api/core/v1"
 
-	spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
+	spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/reviewer"
 )
 
 type (

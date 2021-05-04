@@ -1,0 +1,24 @@
+apiVersion: nodepolicy.nuxeo.io/v1alpha1
+kind: Profile
+metadata:
+  name: node-test
+spec:
+  podSelector:
+    matchLabels:
+      node/test: "true"
+  nodeSelector:
+    type: "stateless"
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "stateless"
+    effect: "NoSchedule"
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - preference:
+        matchExpressions:
+        - key: type
+          operator: In
+          values:
+          - stateless
+      weight: 1

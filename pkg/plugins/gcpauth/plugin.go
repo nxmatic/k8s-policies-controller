@@ -1,14 +1,14 @@
 package gcpauth
 
 import (
-	gcpauth_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpauth/v1alpha1"
+	gcpauth_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpauth/v1alpha1"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth/k8s"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth/reconciler"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth/reviewer"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
-	namespace_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/namespace"
-	reviewer_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpauth/k8s"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpauth/reconciler"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpauth/reviewer"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi"
+	namespace_spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/namespace"
+	reviewer_spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/reviewer"
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"

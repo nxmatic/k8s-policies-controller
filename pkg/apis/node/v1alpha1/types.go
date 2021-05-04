@@ -5,7 +5,7 @@
 package v1alpha1
 
 import (
-	meta_policy_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/meta/v1alpha1"
+	meta_policy_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/meta/v1alpha1"
 	k8s_core_api "k8s.io/api/core/v1"
 	k8s_meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"

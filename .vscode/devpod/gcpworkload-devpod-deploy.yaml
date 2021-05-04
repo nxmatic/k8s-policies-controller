@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: devpod
+  name: gcpworkload-devpod
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      devpod: gcpworkload-controller
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        devpod: gcpworkload-controller
+        app.kubernetes.io/instance: gcpworkload
+        app.kubernetes.io/name: gcpworkload-controller
+    spec:
+      containers:
+        - image: golang:1.16-buster
+          command: [ "/usr/bin/tail", "-f", "/dev/null" ]
+          imagePullPolicy: Always
+          name: dev
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
+            - mountPath: /root
+              name: workspace
+              readOnly: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: gcpworkload-controller-tls
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: devpod-workspace
+      dnsPolicy: ClusterFirst
+      serviceAccountName: gcpworkload-controller
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30

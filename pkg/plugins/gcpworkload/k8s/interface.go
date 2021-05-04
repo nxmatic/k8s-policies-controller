@@ -9,9 +9,9 @@ import (
 
 	cnrm_iam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpworkload/v1alpha1"
-	gcpworkload_policy_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpworkload/v1alpha1"
-	k8s_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
+	gcpworkload_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpworkload/v1alpha1"
+	gcpworkload_policy_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpworkload/v1alpha1"
+	k8s_spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/k8s"
 	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

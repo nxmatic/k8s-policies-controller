@@ -2,8 +2,8 @@ package reconciler
 
 import (
 	gcp_iam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
-	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpworkload/v1alpha1"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkload/k8s"
+	gcpworkload_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpworkload/v1alpha1"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpworkload/k8s"
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"

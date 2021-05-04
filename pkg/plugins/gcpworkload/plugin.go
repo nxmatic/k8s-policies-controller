@@ -2,14 +2,14 @@ package gcpworkload
 
 import (
 	gcpiam_api "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/iam/v1beta1"
-	gcpworkload_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpworkload/v1alpha1"
+	gcpworkload_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpworkload/v1alpha1"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkload/k8s"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkload/reconciler"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkload/reviewer"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
-	namespace_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/namespace"
-	reviewer_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/reviewer"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpworkload/k8s"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpworkload/reconciler"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpworkload/reviewer"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi"
+	namespace_spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/namespace"
+	reviewer_spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/reviewer"
 
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"

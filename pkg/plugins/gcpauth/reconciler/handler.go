@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	gcpauth_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpauth/v1alpha1"
+	gcpauth_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpauth/v1alpha1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"

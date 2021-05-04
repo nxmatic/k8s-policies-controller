@@ -3,7 +3,7 @@ package k8s
 import (
 	"strings"
 
-	policy_meta_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/meta/v1alpha1"
+	policy_meta_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/meta/v1alpha1"
 	k8s_meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

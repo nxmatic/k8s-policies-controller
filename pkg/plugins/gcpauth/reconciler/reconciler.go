@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth/k8s"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpauth/k8s"
 
 	errors_api "k8s.io/apimachinery/pkg/api/errors"
 

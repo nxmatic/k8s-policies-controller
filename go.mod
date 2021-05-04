@@ -1,4 +1,4 @@
-module github.com/nuxeo/k8s-policy-controller
+module github.com/nuxeo/k8s-policies-controller
 
 go 1.15
 

@@ -8,12 +8,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
-	gcpauth_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpauth/v1alpha1"
-	gcpauth_policy_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpauth/v1alpha1"
+	gcpauth_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpauth/v1alpha1"
+	gcpauth_policy_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpauth/v1alpha1"
 	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	k8s_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
+	k8s_spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/k8s"
 )
 
 type (

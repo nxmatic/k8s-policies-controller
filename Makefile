@@ -1,11 +1,11 @@
-BIN := k8s-policy-controller
+BIN := k8s-policies-controller
 CRD_OPTIONS ?= "crd:trivialVersions=true"
-PKG := github.com/nuxeo/k8s-policy-server
+PKG := github.com/nuxeo/k8s-policies-controller
 ARCH ?= amd64
-APP ?= k8s-policy-controller
+APP ?= k8s-policies-controller
 NAMESPACE ?= default
-RELEASE_NAME ?= k8s-policy-controller
-KO_DOCKER_REPO = registry.softonic.io/k8s-policy-controller
+RELEASE_NAME ?= k8s-policies-controller
+KO_DOCKER_REPO = registry.softonic.io/k8s-policies-controller
 REPOSITORY ?= gcr.io/build-jx-prod/library
 VERSION ?= "$(shell git describe --tags | sed 's/^v//')"
 VERSION_PKG ?= $(PKG)/pkg/version
@@ -33,9 +33,9 @@ kubectl-neat.bin := $(if $(kubectl-neat.bin),$(kubectl-neat.bin),/usr/local/bin/
 
 .ONESHELL:
 
-deploy-prod: export IMAGE_GEN = "github.com/softonic/k8s-policy-controller/cmd/k8s-policy-controller"
+kustomizes-prod: export IMAGE_GEN = "github.com/softonic/k8s-policies-controller/cmd/k8s-policies-controller"
 
-deploy:  export IMAGE_GEN = $(APP):$(VERSION)
+kustomizes:  export IMAGE_GEN = $(APP):$(VERSION)
 
 
 .PHONY: all
@@ -61,16 +61,16 @@ image:
 dev: image
 	kind load docker-image $(IMAGE):$(VERSION)
 
-.PHONY: undeploy
-undeploy:
+.PHONY: unkustomizes
+unkustomizes:
 	kubectl delete -f manifest.yaml || true
 
-.PHONY: deploy
-deploy: manifest
-	kustomize build deploy | kubectl apply -f -
+.PHONY: kustomizes
+kustomizes: manifest
+	kustomize build kustomizes | kubectl apply -f -
 
 .PHONY: up
-up: image undeploy deploy
+up: image unkustomizes kustomizes
 
 docker-%: tags := $(REPOSITORY)/$(IMAGE):latest $(REPOSITORY)/$(IMAGE):$(VERSION)
 
@@ -115,9 +115,9 @@ generate:
 
 define generate.script =
 	$(controller-gen.bin) object paths=./pkg/apis/$(package)/...
-	$(controller-gen.bin) crd paths=./pkg/apis/$(package)/... output:crd:artifacts:config=deploy/$(package)
-	$(controller-gen.bin) rbac:roleName=$(package)-controller paths=./pkg/apis/$(package)/... output:rbac:artifacts:config=deploy/$(package)
-	$(jx-cli.bin) gitops rename --dir=deploy/$(package)
+	$(controller-gen.bin) crd paths=./pkg/apis/$(package)/... output:crd:artifacts:config=kustomizes/$(package)
+	$(controller-gen.bin) rbac:roleName=$(package)-controller paths=./pkg/apis/$(package)/... output:rbac:artifacts:config=kustomizes/$(package)
+	$(jx-cli.bin) gitops rename --dir=kustomizes/$(package)
 $(newline)
 endef
 

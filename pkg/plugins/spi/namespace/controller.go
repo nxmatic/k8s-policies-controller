@@ -1,7 +1,7 @@
 package namespace
 
 import (
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/k8s"
 	"github.com/pkg/errors"
 	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"

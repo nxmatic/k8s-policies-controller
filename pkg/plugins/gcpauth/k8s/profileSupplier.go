@@ -1,9 +1,9 @@
 package k8s
 
 import (
-	gcpauth_policy_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/gcpauth/v1alpha1"
-	meta_policy_api "github.com/nuxeo/k8s-policy-controller/pkg/apis/meta/v1alpha1"
-	k8s_spi "github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
+	gcpauth_policy_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpauth/v1alpha1"
+	meta_policy_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/meta/v1alpha1"
+	k8s_spi "github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/k8s"
 )
 
 type ProfileSupplier struct {

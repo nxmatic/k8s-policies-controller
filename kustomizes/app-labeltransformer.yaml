@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: app
+labels:
+  app.kubernetes.io/name: k8s-policies-controller
+fieldSpecs:
+- path: metadata/labels
+  create: true

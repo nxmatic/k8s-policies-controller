@@ -1,11 +1,11 @@
 package plugins
 
 import (
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi"
 
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpauth"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/gcpworkload"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/node"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpauth"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpworkload"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/node"
 )
 
 var (

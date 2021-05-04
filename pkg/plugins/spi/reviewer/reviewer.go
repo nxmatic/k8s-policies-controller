@@ -2,7 +2,7 @@ package reviewer
 
 import (
 	"github.com/go-logr/logr"
-	"github.com/nuxeo/k8s-policy-controller/pkg/plugins/spi/k8s"
+	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/k8s"
 
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 

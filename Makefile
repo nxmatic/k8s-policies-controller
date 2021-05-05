@@ -1,4 +1,5 @@
 .ONESHELL:
+.SHELLFLAGS = -e -c
 
 include make.d/macros.mk
 include make.d/os.mk
@@ -11,39 +12,71 @@ make.d make.d/os.mk make.d/macros.mk:
 	git submodule init
 	git submodule update
 
-BIN := k8s-policies-controller
-CRD_OPTIONS ?= "crd:trivialVersions=true"
-PKG := github.com/nuxeo/k8s-policies-controller
-ARCH ?= amd64
-APP ?= k8s-policies-controller
-NAMESPACE ?= default
-RELEASE_NAME ?= k8s-policies-controller
-KO_DOCKER_REPO = registry.softonic.io/k8s-policies-controller
-REPOSITORY ?= gcr.io/build-jx-prod/library
-VERSION ?= 0.0.0-SNAPHOT
-VERSION_PKG ?= $(PKG)/pkg/version
-VERSION_DATE ?= $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
+ifndef
+NAMESPACE := jx
+endif
+ifndef VERSION
+VERSION := $(shell git describe --tags| sed -r 's/^v//')
+endif
+VERSION_PKG := $(PKG)/pkg/version
+VERSION_DATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
+VERSION_TAG := v$(VERSION)
+
+APP := $(if $(APP_NAME),$(APP_NAME),k8s-policies-controller)
+BIN := $(APP)
+PKG := github.com/nuxeo/$(APP)
+OS := $(os)
+ARCH := amd64
 LD_FLAGS := -X $(VERSION_PKG).Version=$(VERSION) -X $(VERSION_PKG).buildDate=$(VERSION_DATE)
-
 IMAGE := $(BIN)
-
-BUILD_IMAGE ?= golang:1.15-buster
+BUILD_IMAGE := golang:1.15-buster
 
 
 .PHONY: all
 all: dev
+
+
+.PHONY: release
+release:
+	@:
+
+release: generate
+release: release~kustomizes
+release: release~binaries
+
+
+.PHONY: release~binaries
+release~binaries:
+	@: $(info releasing the binaries for $(VERSION_TAG))
+	git tag -a -m 'chore: release $(VERSION_TAG)' -f $(VERSION_TAG)
+	goreleaser release --config=.goreleaser.yml --rm-dist
+
+.PHONY: release~kustomizes
+release~kustomizes:
+	@: $(info versioning kustomizes@$(VERSION_TAG))
+	[ -z "$$(git status -s)" ] || git commit -m 'chore: versioning kustomizes $(VERSION_TAG)' kustomizes
+	git tag -f $(VERSION_TAG) && git push -f origin $(VERSION_TAG)
+
+release~binaries: export GITHUB_TOKEN=$(GIT_TOKEN)
+release~binaries: export REV=$(shell git rev-parse --short HEAD 2> /dev/null || echo 'unknown')
+release~binaries: export BRANCH=$(BRANCH_NAME)
+release~binaries: export BUILDDATE=$(VERSION_DATE)
+release~binaries: export GOVERSION=$(shell go version | sed -e 's/^[^0-9.]*\([0-9.]*\).*/\1/')
+release~binaries: export export VERSION=$(VERSION_TAG)
+release~binaries: export export ROOTPACKAGE = $(PKG)
 
 .PHONY: generate
 generate: controller-gen
 generate: manifest.yaml
 
 .PHONY: build
-build: generate compile 
+build:: generate compile
 
 .PHONY: compile
 compile:
+	@: $(info compiling)
 	go mod download
-	GOARCH=${ARCH} go build -ldflags "$(LD_FLAGS)"
+	GOOS=$(GOOS) GOARCH=${ARCH} go build -ldflags "$(LD_FLAGS)"
 
 .PHONY: test
 test:
@@ -53,9 +86,7 @@ test:
 image:
 	docker build -t $(IMAGE):latest -f Dockerfile .
 
-.PHONY: dev
-dev: image
-	kind load docker-image $(IMAGE):$(VERSION)
+image: $(BIN)
 
 .PHONY: unkustomizes
 unkustomizes: manifest.yaml
@@ -66,14 +97,6 @@ kustomizes: manifest.yaml
 	kubectl apply -f manifest.yaml
 
 
-ifdef DOCKER_REGISTRY
-manifest.yaml: image:=$(DOCKER_REGISTRY)/$(DOCKER_REGISTRY_ORG)/$(IMAGE)
-else
-manifest.yaml: image:=$(IMAGE)
-endif
-
-manifest.yaml: tag:=$(VERSION) 
-
 manifest.yaml: $(wildcard kustomizes/*.yaml) $(wildcard kustomizes/*/*.yaml)
 
 manifest.yaml: | $(kustomize.bin) $(jx-cli.bin)
@@ -81,9 +104,11 @@ manifest.yaml: | $(kustomize.bin) $(jx-cli.bin)
 	(cd kustomizes/controller && kustomize edit set image k8s-policies-controller:latest=$(image):$(tag))
 	$(kustomize.bin) cfg fmt kustomizes
 	$(kustomize.bin) build kustomizes -o manifest.yaml
-	
-controller-gen: packages := gcpauth gcpworkload node meta
-controller-gen: script=$(controller-gen.script)
+
+manifest.yaml: image:=$(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/$(DOCKER_REGISTRY_ORG)/$(IMAGE),$(IMAGE))
+manifest.yaml: tag:=$(VERSION)
+
+
 controller-gen: | $(controller-gen.bin) $(jx-cli.bin) $(kustomize.bin)
 
 .PHONY: controller-gen
@@ -91,6 +116,9 @@ controller-gen:
 	@: $(info generating controller descriptors)
 	$(foreach package,$(packages),$(script))
 	$(jx-cli.bin) gitops rename --dir=kustomizes
+
+controller-gen: packages := gcpauth gcpworkload node meta
+controller-gen: script=$(controller-gen.script)
 
 define controller-gen.script =
 	$(controller-gen.bin) object paths=./pkg/apis/$(package)/...
@@ -107,34 +135,12 @@ fmt:
 .PHONY: up
 up: image unkustomizes kustomizes
 
-docker-%: tags := $(REPOSITORY)/$(IMAGE):latest $(REPOSITORY)/$(IMAGE):$(VERSION)
-
-.PHONY: docker-tag
-docker-tag: script=$(docker-tag.script)
-docker-tag:
-	$(foreach tag,$(tags),$(script))
-
-define docker-tag.script =
-docker tag $(IMAGE):latest $(tag)
-$(newline)
-endef
-
-.PHONY: docker-push
-docker-push: script=$(docker-push.script)
-docker-push:
-	$(foreach tag,$(tags),$(script))
-
-define docker-push.script =
-docker push $(tag)
-$(newline)
-endef
-
 .PHONY: version
 version:
-	@echo $(VERSION)
+	@echo $(VERSION_TAG)
 
-VERSION:
-	@echo v$(VERSION) > $(@)
+VERSION::
+	@echo v$(VERSION_TAG) > $(@)
 
 null  :=
 space := $(null) #

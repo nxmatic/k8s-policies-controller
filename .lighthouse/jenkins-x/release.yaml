@@ -11,35 +11,59 @@ spec:
       taskSpec:
         metadata: {}
         stepTemplate:
-          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/docker/release.yaml@versionStream
+          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/go-cli/release.yaml@versionStream
           name: ""
           resources:
             requests:
               cpu: 400m
-              memory: 512Mi
+              memory: 600Mi
           workingDir: /workspace/source
         steps:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
           name: ""
           resources: {}
         - name: next-version
-          script: |
-            #!/usr/bin/env sh
-            jx-release-version --tag --push-tag=false > VERSION
           resources: {}
+          script: |
+            #!/bin/sh -e
+            jx-release-version --tag --push-tag=false > VERSION
         - name: jx-variables
           resources: {}
-        - name: jx-variables:submodule
+        - name: jx-variables:git-submodule
+          resources: {}
           script: |-
-            #!/bin/sh
+            #!/bin/sh -e
             git submodule init
             git submodule update
+        - name: build-make-build
+          image: goreleaser/goreleaser:v0.164.0
+          resources: {}
+          script: |
+            #!/bin/sh -e
+            source .jx/variables.sh
+            make release
+          env:
+          - name: GIT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: tekton-git
+          - name: GIT_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: tekton-git
         - name: check-registry
           resources: {}
         - name: build-container-build
           resources: {}
-        - name: promote-changelog
-          resources: {}
+          script: |
+            #!/busybox/sh -e
+            source .jx/variables.sh
+            cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
+            exec /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile \
+              --destination=$PUSH_CONTAINER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION \
+              --destination=$PUSH_CONTAINER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:latest
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 240h0m0s

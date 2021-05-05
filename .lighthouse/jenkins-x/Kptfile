@@ -7,5 +7,5 @@ upstream:
   git:
     commit: 207f4964efce9332293382c371fecee99743d6e7
     repo: https://github.com/jenkins-x/jx3-pipeline-catalog
-    directory: /packs/docker/.lighthouse/jenkins-x
+    directory: /packs/go-cli/.lighthouse/jenkins-x
     ref: v0.0.311

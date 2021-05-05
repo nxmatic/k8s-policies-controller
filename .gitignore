@@ -3,8 +3,9 @@ ssl/*.csr
 ssl/*.key
 ssl/*.pem
 /vendor
-/manifest.yaml
 chart/node-policy-webhook/secret.values.yaml
 k8s-policies-controller
 *~
 /.local
+/manifest.yaml
+/dist

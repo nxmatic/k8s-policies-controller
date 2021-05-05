@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: controller
+spec:
+  commonName: controller.policies.svc
+  dnsNames:
+  - controller.policies.svc
+  - controller.policies.svc.cluster.local
+  issuerRef:
+    name: policy-controller
+    kind: Issuer
+  secretName: controller-tls

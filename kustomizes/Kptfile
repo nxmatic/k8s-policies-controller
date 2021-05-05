@@ -1,12 +1,7 @@
-apiVersion: kpt.dev/v1alpha1
+apiVersion: config.k8s.io/v1alpha1
 kind: Kptfile
 metadata:
-  name: kustomizes
-packageMetadata:
-  tags:
-  - nos.build.nuxeo.io/app=k8s-policies-controller
-  shortDescription: nuxeo k8s policies controller for gcp auth, gcp workload and node
-    profiles
+  name: k8s-policies-controller
 openAPI:
   definitions:
     io.k8s.cli.setters.docker-registry:

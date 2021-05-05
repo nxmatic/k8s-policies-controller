@@ -1,14 +1,30 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- gcpauth-controller-certificate.yaml
 - gcpauth-controller-clusterrole.yaml
-- gcpauth-controller-crb.yaml
-- gcpauth-controller-deploy.yaml
-- gcpauth-controller-sa.yaml
-- gcpauth-controller-svc.yaml
 - gcpauth-mutwebhookcfg.yaml
 - profiles.gcpauth.policies.nuxeo.io-crd.yaml
-commonLabels:
-  app.kubernetes.io/component: controller
+commonlabels:
   app.kubernetes.io/instance: gcpauth
+components:
+- ../controller
+transformers:
+- |-
+  apiVersion: builtin
+  kind: PrefixSuffixTransformer
+  metadata:
+    name: controller
+  prefix: gcpauth-
+  fieldSpecs:
+  - kind: Certificate
+    path: metadata/name
+  - kind: ClusterRole
+    path: metadata/name
+  - kind: ClusterRoleBinding
+    path: metadata/name
+  - kind: Deployment
+    path: metadata/name
+  - kind: ServiceAccount
+    path: metadata/name
+  - kind: Service
+    path: metadata/name

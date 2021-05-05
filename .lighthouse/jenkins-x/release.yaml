@@ -23,9 +23,17 @@ spec:
           name: ""
           resources: {}
         - name: next-version
+          script: |
+            #!/usr/bin/env sh
+            jx-release-version --tag --push-tag=false > VERSION
           resources: {}
         - name: jx-variables
           resources: {}
+        - name: jx-variables:submodule
+          script: |-
+            #!/bin/sh
+            git submodule init
+            git submodule update
         - name: check-registry
           resources: {}
         - name: build-container-build

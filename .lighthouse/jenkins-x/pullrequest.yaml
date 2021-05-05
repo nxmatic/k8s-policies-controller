@@ -24,6 +24,12 @@ spec:
           resources: {}
         - name: jx-variables
           resources: {}
+        - name: jx-variables:git
+          resources: {}
+          script: |-
+            #!/bin/sh
+            git submodule init 
+            git submodule update
         - name: check-registry
           resources: {}
         - name: build-container-build

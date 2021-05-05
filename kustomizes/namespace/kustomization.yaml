@@ -5,5 +5,5 @@ resources:
 - selfsigned-issuer.yaml
 - policy-controller-ca-certificate.yaml
 - policy-controller-issuer.yaml
-commonLabels:
+commonlabels:
   app.kubernetes.io/component: namespace

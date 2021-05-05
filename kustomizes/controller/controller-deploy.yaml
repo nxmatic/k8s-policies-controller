@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node-controller
+  name: controller
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/instance: node-controller
+      app.kubernetes.io/instance: controller
       app.kubernetes.io/name: k8s-policies-controller
   template:
     metadata:
       labels:
-        app.kubernetes.io/instance: node-controller
+        app.kubernetes.io/instance: controller
         app.kubernetes.io/name: k8s-policies-controller
     spec:
-      serviceAccountName: node-controller
+      serviceAccountName: controller
       containers:
       - name: controller
-        image: k8s-policies-controller:latest {"$kpt-set":"image"}
+        image: k8s-policies-controller:latest
         args:
         - --zap-devel
         - --kind=node
@@ -49,5 +49,5 @@ spec:
       - name: cert
         secret:
           defaultMode: 420
-          secretName: node-controller-tls
+          secretName: controller-tls
       securityContext: {}

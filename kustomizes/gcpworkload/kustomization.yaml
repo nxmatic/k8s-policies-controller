@@ -1,14 +1,30 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- gcpworkload-controller-certificate.yaml
 - gcpworkload-controller-clusterrole.yaml
-- gcpworkload-controller-crb.yaml
-- gcpworkload-controller-deploy.yaml
-- gcpworkload-controller-sa.yaml
-- gcpworkload-controller-svc.yaml
 - gcpworkload-mutwebhookcfg.yaml
 - profiles.gcpworkload.policies.nuxeo.io-crd.yaml
-commonLabels:
-  app.kubernetes.io/component: controller
+commonlabels:
   app.kubernetes.io/instance: gcpworkload
+components:
+- ../controller
+transformers:
+- |-
+  apiVersion: builtin
+  kind: PrefixSuffixTransformer
+  metadata:
+    name: controller
+  prefix: gcpworkload-
+  fieldSpecs:
+  - kind: Certificate
+    path: metadata/name
+  - kind: ClusterRole
+    path: metadata/name
+  - kind: ClusterRoleBinding
+    path: metadata/name
+  - kind: Deployment
+    path: metadata/name
+  - kind: ServiceAccount
+    path: metadata/name
+  - kind: Service
+    path: metadata/name

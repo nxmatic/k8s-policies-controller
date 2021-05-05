@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gcpworkload-controller
+  name: controller
 spec:
   type: ClusterIP
   selector:

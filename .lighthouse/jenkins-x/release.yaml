@@ -29,10 +29,10 @@ spec:
         - name: build-container-build
           resources: {}
           script: |
-            #!/busybox/sh
+            #!/busybox/sh -x
             source .jx/variables.sh
             cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
-            /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile \
+            /kaniko/executor $KANIKOFLAGS --context=/workspace/source --dockerfile=Dockerfile \
               --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION \
               --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:latest
         - name: promote-changelog

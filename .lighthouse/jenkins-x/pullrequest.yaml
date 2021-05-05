@@ -27,10 +27,10 @@ spec:
         - name: build-container-build
           resources: {}
           script: |
-            #!/busybox/sh
+            #!/busybox/sh -x
             source .jx/variables.sh
             cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
-            /kaniko/executor $KANIKO_FLAGS --build-arg=VERSION=$VERSION --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION
+            /kaniko/executor $KANIKOFLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 240h0m0s

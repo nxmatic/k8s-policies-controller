@@ -8,6 +8,6 @@ spec:
   - gcpworkload-controller.policies.svc
   - gcpworkload-controller.policies.svc.cluster.local
   issuerRef:
-    kind: Issuer
     name: policy-controller
+    kind: Issuer
   secretName: gcpworkload-controller-tls

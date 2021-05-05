@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: gcpauth-controller
 spec:
-  ports:
-  - name: webhook-server
-    port: 443
-    protocol: TCP
-    targetPort: webhook-server
+  type: ClusterIP
   selector:
     app.kubernetes.io/instance: k8s-policies-controller
     app.kubernetes.io/name: k8s-policies-controller
-  type: ClusterIP
+  ports:
+  - name: webhook-server
+    protocol: TCP
+    port: 443
+    targetPort: webhook-server

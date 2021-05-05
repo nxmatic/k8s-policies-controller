@@ -14,40 +14,40 @@ spec:
         app.kubernetes.io/instance: node-controller
         app.kubernetes.io/name: k8s-policies-controller
     spec:
+      serviceAccountName: node-controller
       containers:
-      - args:
+      - name: controller
+        image: k8s-policies-controller
+        args:
         - --zap-devel
         - --kind=node
+        ports:
+        - name: webhook-server
+          protocol: TCP
+          containerPort: 9443
+        - name: metrics-server
+          protocol: TCP
+          containerPort: 8080
         env:
-        image: k8s-policies-controller
-        imagePullPolicy: Always
+        resources: {}
+        volumeMounts:
+        - name: cert
+          readOnly: true
+          mountPath: /tmp/k8s-webhook-server/serving-certs
         livenessProbe:
           httpGet:
-            path: /metrics
             port: metrics-server
-        name: controller
-        ports:
-        - containerPort: 9443
-          name: webhook-server
-          protocol: TCP
-        - containerPort: 8080
-          name: metrics-server
-          protocol: TCP
+            path: /metrics
         readinessProbe:
           httpGet:
-            path: /metrics
             port: metrics-server
+            path: /metrics
             scheme: HTTP
-        resources: {}
+        imagePullPolicy: Always
         securityContext: {}
-        volumeMounts:
-        - mountPath: /tmp/k8s-webhook-server/serving-certs
-          name: cert
-          readOnly: true
-      securityContext: {}
-      serviceAccountName: node-controller
       volumes:
       - name: cert
         secret:
           defaultMode: 420
           secretName: node-controller-tls
+      securityContext: {}

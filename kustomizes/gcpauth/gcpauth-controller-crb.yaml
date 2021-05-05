@@ -3,10 +3,10 @@ kind: ClusterRoleBinding
 metadata:
   name: gcpauth-controller
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  name: gcpauth-controller
   kind: ClusterRole
-  name: gcpauth-controller
+  apiGroup: rbac.authorization.k8s.io
 subjects:
-- kind: ServiceAccount
-  name: gcpauth-controller
+- name: gcpauth-controller
   namespace: policies
+  kind: ServiceAccount

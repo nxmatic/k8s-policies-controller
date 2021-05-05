@@ -3,9 +3,9 @@ kind: ClusterRoleBinding
 metadata:
   name: node-controller
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  name: node-controller
   kind: ClusterRole
-  name: node-controller
+  apiGroup: rbac.authorization.k8s.io
 subjects:
-- kind: ServiceAccount
-  name: node-controller
+- name: node-controller
+  kind: ServiceAccount

@@ -1,8 +1,5 @@
-kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-commonLabels:
-  app.kubernetes.io/instance: gcpworkload
-  app.kubernetes.io/component: controller
+kind: Kustomization
 resources:
 - gcpworkload-controller-certificate.yaml
 - gcpworkload-controller-clusterrole.yaml
@@ -12,3 +9,6 @@ resources:
 - gcpworkload-controller-svc.yaml
 - gcpworkload-mutwebhookcfg.yaml
 - profiles.gcpworkload.policies.nuxeo.io-crd.yaml
+commonLabels:
+  app.kubernetes.io/component: controller
+  app.kubernetes.io/instance: gcpworkload

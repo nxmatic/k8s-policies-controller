@@ -1,19 +1,19 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
+  name: gcpauth
   annotations:
     cert-manager.io/inject-ca-from: policies/gcpauth-controller
-  name: gcpauth
 webhooks:
-- clientConfig:
-    caBundle: ""
+- name: gcpauth-controller.policies.svc.cluster.local
+  clientConfig:
     service:
       name: gcpauth-controller
       namespace: default
-      path: /mutate-v1-serviceaccounts
       port: 443
+      path: /mutate-v1-serviceaccounts
+    caBundle: ""
   failurePolicy: Ignore
-  name: gcpauth-controller.policies.svc.cluster.local
   objectSelector:
     matchExpressions:
     - key: app
@@ -22,13 +22,13 @@ webhooks:
       - k8s-policies-controller
   reinvocationPolicy: Never
   rules:
-  - apiGroups:
+  - resources:
+    - serviceaccounts
+    apiGroups:
     - ""
     apiVersions:
     - v1
     operations:
     - CREATE
-    resources:
-    - serviceaccounts
   sideEffects: NoneOnDryRun
   timeoutSeconds: 5

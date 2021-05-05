@@ -1,12 +1,10 @@
-
----
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
+  name: profiles.node.policies.nuxeo.io
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.5
   creationTimestamp: null
-  name: profiles.node.policies.nuxeo.io
 spec:
   group: node.policies.nuxeo.io
   names:
@@ -17,27 +15,128 @@ spec:
   scope: Cluster
   validation:
     openAPIV3Schema:
+      type: object
       description: Profile is the Schema for the node.policyprofiles API
       properties:
         apiVersion:
+          type: string
           description: 'APIVersion defines the versioned schema of this representation
             of an object. Servers should convert recognized schemas to the latest
             internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-          type: string
         kind:
+          type: string
           description: 'Kind is a string value representing the REST resource this
             object represents. Servers may infer this from the endpoint the client
             submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-          type: string
         metadata:
           type: object
         spec:
+          type: object
           description: ProfileSpec defines the desired state of NodePolicyProfile
           properties:
+            selector:
+              type: object
+              description: ObjectSelector defines the criterias for selecting the
+                targeted objects
+              properties:
+                namespaces:
+                  type: string
+                objects:
+                  type: object
+                  description: A label selector is a label query over a set of resources.
+                    The result of matchLabels and matchExpressions are ANDed. An empty
+                    label selector matches all objects. A null label selector matches
+                    no objects.
+                  properties:
+                    matchExpressions:
+                      type: array
+                      description: matchExpressions is a list of label selector requirements.
+                        The requirements are ANDed.
+                      items:
+                        type: object
+                        description: A label selector requirement is a selector that
+                          contains values, a key, and an operator that relates the
+                          key and values.
+                        properties:
+                          key:
+                            type: string
+                            description: key is the label key that the selector applies
+                              to.
+                          operator:
+                            type: string
+                            description: operator represents a key's relationship
+                              to a set of values. Valid operators are In, NotIn, Exists
+                              and DoesNotExist.
+                          values:
+                            type: array
+                            description: values is an array of string values. If the
+                              operator is In or NotIn, the values array must be non-empty.
+                              If the operator is Exists or DoesNotExist, the values
+                              array must be empty. This array is replaced during a
+                              strategic merge patch.
+                            items:
+                              type: string
+                        required:
+                        - key
+                        - operator
+                    matchLabels:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: matchLabels is a map of {key,value} pairs. A single
+                        {key,value} in the matchLabels map is equivalent to an element
+                        of matchExpressions, whose key field is "key", the operator
+                        is "In", and the values array contains only "value". The requirements
+                        are ANDed.
+            nodeSelector:
+              type: object
+              additionalProperties:
+                type: string
+            tolerations:
+              type: array
+              items:
+                type: object
+                description: The pod this Toleration is attached to tolerates any
+                  taint that matches the triple <key,value,effect> using the matching
+                  operator <operator>.
+                properties:
+                  value:
+                    type: string
+                    description: Value is the taint value the toleration matches to.
+                      If the operator is Exists, the value should be empty, otherwise
+                      just a regular string.
+                  effect:
+                    type: string
+                    description: Effect indicates the taint effect to match. Empty
+                      means match all taint effects. When specified, allowed values
+                      are NoSchedule, PreferNoSchedule and NoExecute.
+                  key:
+                    type: string
+                    description: Key is the taint key that the toleration applies
+                      to. Empty means match all taint keys. If the key is empty, operator
+                      must be Exists; this combination means to match all values and
+                      all keys.
+                  operator:
+                    type: string
+                    description: Operator represents a key's relationship to the value.
+                      Valid operators are Exists and Equal. Defaults to Equal. Exists
+                      is equivalent to wildcard for value, so that a pod can tolerate
+                      all taints of a particular category.
+                  tolerationSeconds:
+                    type: integer
+                    description: TolerationSeconds represents the period of time the
+                      toleration (which must be of effect NoExecute, otherwise this
+                      field is ignored) tolerates the taint. By default, it is not
+                      set, which means tolerate the taint forever (do not evict).
+                      Zero and negative values will be treated as 0 (evict immediately)
+                      by the system.
+                    format: int64
             nodeAffinity:
+              type: object
               description: Node affinity is a group of node affinity scheduling rules.
               properties:
                 preferredDuringSchedulingIgnoredDuringExecution:
+                  type: array
                   description: The scheduler will prefer to schedule pods to nodes
                     that satisfy the affinity expressions specified by this field,
                     but it may choose a node that violates one or more of the expressions.
@@ -49,32 +148,37 @@ spec:
                     the corresponding matchExpressions; the node(s) with the highest
                     sum are the most preferred.
                   items:
+                    type: object
                     description: An empty preferred scheduling term matches all objects
                       with implicit weight 0 (i.e. it's a no-op). A null preferred
                       scheduling term matches no objects (i.e. is also a no-op).
                     properties:
                       preference:
+                        type: object
                         description: A node selector term, associated with the corresponding
                           weight.
                         properties:
                           matchExpressions:
+                            type: array
                             description: A list of node selector requirements by node's
                               labels.
                             items:
+                              type: object
                               description: A node selector requirement is a selector
                                 that contains values, a key, and an operator that
                                 relates the key and values.
                               properties:
                                 key:
+                                  type: string
                                   description: The label key that the selector applies
                                     to.
-                                  type: string
                                 operator:
+                                  type: string
                                   description: Represents a key's relationship to
                                     a set of values. Valid operators are In, NotIn,
                                     Exists, DoesNotExist. Gt, and Lt.
-                                  type: string
                                 values:
+                                  type: array
                                   description: An array of string values. If the operator
                                     is In or NotIn, the values array must be non-empty.
                                     If the operator is Exists or DoesNotExist, the
@@ -85,30 +189,30 @@ spec:
                                     patch.
                                   items:
                                     type: string
-                                  type: array
                               required:
                               - key
                               - operator
-                              type: object
-                            type: array
                           matchFields:
+                            type: array
                             description: A list of node selector requirements by node's
                               fields.
                             items:
+                              type: object
                               description: A node selector requirement is a selector
                                 that contains values, a key, and an operator that
                                 relates the key and values.
                               properties:
                                 key:
+                                  type: string
                                   description: The label key that the selector applies
                                     to.
-                                  type: string
                                 operator:
+                                  type: string
                                   description: Represents a key's relationship to
                                     a set of values. Valid operators are In, NotIn,
                                     Exists, DoesNotExist. Gt, and Lt.
-                                  type: string
                                 values:
+                                  type: array
                                   description: An array of string values. If the operator
                                     is In or NotIn, the values array must be non-empty.
                                     If the operator is Exists or DoesNotExist, the
@@ -119,24 +223,19 @@ spec:
                                     patch.
                                   items:
                                     type: string
-                                  type: array
                               required:
                               - key
                               - operator
-                              type: object
-                            type: array
-                        type: object
                       weight:
+                        type: integer
                         description: Weight associated with matching the corresponding
                           nodeSelectorTerm, in the range 1-100.
                         format: int32
-                        type: integer
                     required:
                     - preference
                     - weight
-                    type: object
-                  type: array
                 requiredDuringSchedulingIgnoredDuringExecution:
+                  type: object
                   description: If the affinity requirements specified by this field
                     are not met at scheduling time, the pod will not be scheduled
                     onto the node. If the affinity requirements specified by this
@@ -145,31 +244,36 @@ spec:
                     evict the pod from its node.
                   properties:
                     nodeSelectorTerms:
+                      type: array
                       description: Required. A list of node selector terms. The terms
                         are ORed.
                       items:
+                        type: object
                         description: A null or empty node selector term matches no
                           objects. The requirements of them are ANDed. The TopologySelectorTerm
                           type implements a subset of the NodeSelectorTerm.
                         properties:
                           matchExpressions:
+                            type: array
                             description: A list of node selector requirements by node's
                               labels.
                             items:
+                              type: object
                               description: A node selector requirement is a selector
                                 that contains values, a key, and an operator that
                                 relates the key and values.
                               properties:
                                 key:
+                                  type: string
                                   description: The label key that the selector applies
                                     to.
-                                  type: string
                                 operator:
+                                  type: string
                                   description: Represents a key's relationship to
                                     a set of values. Valid operators are In, NotIn,
                                     Exists, DoesNotExist. Gt, and Lt.
-                                  type: string
                                 values:
+                                  type: array
                                   description: An array of string values. If the operator
                                     is In or NotIn, the values array must be non-empty.
                                     If the operator is Exists or DoesNotExist, the
@@ -180,30 +284,30 @@ spec:
                                     patch.
                                   items:
                                     type: string
-                                  type: array
                               required:
                               - key
                               - operator
-                              type: object
-                            type: array
                           matchFields:
+                            type: array
                             description: A list of node selector requirements by node's
                               fields.
                             items:
+                              type: object
                               description: A node selector requirement is a selector
                                 that contains values, a key, and an operator that
                                 relates the key and values.
                               properties:
                                 key:
+                                  type: string
                                   description: The label key that the selector applies
                                     to.
-                                  type: string
                                 operator:
+                                  type: string
                                   description: Represents a key's relationship to
                                     a set of values. Valid operators are In, NotIn,
                                     Exists, DoesNotExist. Gt, and Lt.
-                                  type: string
                                 values:
+                                  type: array
                                   description: An array of string values. If the operator
                                     is In or NotIn, the values array must be non-empty.
                                     If the operator is Exists or DoesNotExist, the
@@ -214,120 +318,14 @@ spec:
                                     patch.
                                   items:
                                     type: string
-                                  type: array
                               required:
                               - key
                               - operator
-                              type: object
-                            type: array
-                        type: object
-                      type: array
                   required:
                   - nodeSelectorTerms
-                  type: object
-              type: object
-            nodeSelector:
-              additionalProperties:
-                type: string
-              type: object
-            selector:
-              description: ObjectSelector defines the criterias for selecting the
-                targeted objects
-              properties:
-                namespaces:
-                  type: string
-                objects:
-                  description: A label selector is a label query over a set of resources.
-                    The result of matchLabels and matchExpressions are ANDed. An empty
-                    label selector matches all objects. A null label selector matches
-                    no objects.
-                  properties:
-                    matchExpressions:
-                      description: matchExpressions is a list of label selector requirements.
-                        The requirements are ANDed.
-                      items:
-                        description: A label selector requirement is a selector that
-                          contains values, a key, and an operator that relates the
-                          key and values.
-                        properties:
-                          key:
-                            description: key is the label key that the selector applies
-                              to.
-                            type: string
-                          operator:
-                            description: operator represents a key's relationship
-                              to a set of values. Valid operators are In, NotIn, Exists
-                              and DoesNotExist.
-                            type: string
-                          values:
-                            description: values is an array of string values. If the
-                              operator is In or NotIn, the values array must be non-empty.
-                              If the operator is Exists or DoesNotExist, the values
-                              array must be empty. This array is replaced during a
-                              strategic merge patch.
-                            items:
-                              type: string
-                            type: array
-                        required:
-                        - key
-                        - operator
-                        type: object
-                      type: array
-                    matchLabels:
-                      additionalProperties:
-                        type: string
-                      description: matchLabels is a map of {key,value} pairs. A single
-                        {key,value} in the matchLabels map is equivalent to an element
-                        of matchExpressions, whose key field is "key", the operator
-                        is "In", and the values array contains only "value". The requirements
-                        are ANDed.
-                      type: object
-                  type: object
-              type: object
-            tolerations:
-              items:
-                description: The pod this Toleration is attached to tolerates any
-                  taint that matches the triple <key,value,effect> using the matching
-                  operator <operator>.
-                properties:
-                  effect:
-                    description: Effect indicates the taint effect to match. Empty
-                      means match all taint effects. When specified, allowed values
-                      are NoSchedule, PreferNoSchedule and NoExecute.
-                    type: string
-                  key:
-                    description: Key is the taint key that the toleration applies
-                      to. Empty means match all taint keys. If the key is empty, operator
-                      must be Exists; this combination means to match all values and
-                      all keys.
-                    type: string
-                  operator:
-                    description: Operator represents a key's relationship to the value.
-                      Valid operators are Exists and Equal. Defaults to Equal. Exists
-                      is equivalent to wildcard for value, so that a pod can tolerate
-                      all taints of a particular category.
-                    type: string
-                  tolerationSeconds:
-                    description: TolerationSeconds represents the period of time the
-                      toleration (which must be of effect NoExecute, otherwise this
-                      field is ignored) tolerates the taint. By default, it is not
-                      set, which means tolerate the taint forever (do not evict).
-                      Zero and negative values will be treated as 0 (evict immediately)
-                      by the system.
-                    format: int64
-                    type: integer
-                  value:
-                    description: Value is the taint value the toleration matches to.
-                      If the operator is Exists, the value should be empty, otherwise
-                      just a regular string.
-                    type: string
-                type: object
-              type: array
-          type: object
         status:
-          description: ProfileStatus defines the observed state of NodePolicyProfile
           type: object
-      type: object
+          description: ProfileStatus defines the observed state of NodePolicyProfile
   version: v1alpha1
   versions:
   - name: v1alpha1

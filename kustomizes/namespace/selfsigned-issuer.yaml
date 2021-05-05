@@ -1,8 +1,8 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
+  name: selfsigned
   labels:
     app.kubernetes.io/name: k8s-policies-controller
-  name: selfsigned
 spec:
   selfSigned: {}

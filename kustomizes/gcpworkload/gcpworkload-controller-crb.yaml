@@ -3,10 +3,10 @@ kind: ClusterRoleBinding
 metadata:
   name: gcpworkload-controller
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  name: gcpworkload-controller
   kind: ClusterRole
-  name: gcpworkload-controller
+  apiGroup: rbac.authorization.k8s.io
 subjects:
-- kind: ServiceAccount
-  name: gcpworkload-controller
+- name: gcpworkload-controller
   namespace: policies
+  kind: ServiceAccount

@@ -5,5 +5,9 @@ resources:
 - gcpauth
 - gcpworkload
 - node
+images:
+- name: k8s-policy-controller
+  newName: gcr.io/build-jx-prod/nuxeo/k8s-policies-controller # {"$kpt-set":"image-name"}
+  newTag: latest # {"$kpt-set":"image-tag"}
 transformers:
 - app-labeltransformer.yaml

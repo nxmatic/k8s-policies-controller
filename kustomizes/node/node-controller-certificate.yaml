@@ -8,6 +8,6 @@ spec:
   - node-controller.policies.svc
   - node-controller.policies.svc.cluster.local
   issuerRef:
-    kind: Issuer
     name: policy-controller
+    kind: Issuer
   secretName: node-controller-tls

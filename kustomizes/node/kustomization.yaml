@@ -1,8 +1,5 @@
-kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-commonLabels:
-  app.kubernetes.io/instance: node
-  app.kubernetes.io/component: controller
+kind: Kustomization
 resources:
 - node-controller-certificate.yaml
 - node-controller-clusterrole.yaml
@@ -12,3 +9,6 @@ resources:
 - node-controller-svc.yaml
 - node-mutwebhookcfg.yaml
 - profiles.node.policies.nuxeo.io-crd.yaml
+commonLabels:
+  app.kubernetes.io/component: controller
+  app.kubernetes.io/instance: node

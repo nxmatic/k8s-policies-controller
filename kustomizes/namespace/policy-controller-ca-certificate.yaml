@@ -1,9 +1,9 @@
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
+  name: policy-controller-ca
   labels:
     app.kubernetes.io/name: k8s-policies-controller
-  name: policy-controller-ca
 spec:
   commonName: policies.svc
   isCA: true

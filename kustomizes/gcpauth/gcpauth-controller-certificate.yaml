@@ -8,6 +8,6 @@ spec:
   - gcpauth-controller.policies.svc
   - gcpauth-controller.policies.svc.cluster.local
   issuerRef:
-    kind: Issuer
     name: policy-controller
+    kind: Issuer
   secretName: gcpauth-controller-tls

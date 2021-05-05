@@ -1,8 +1,5 @@
-kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
-commonLabels:
-  app.kubernetes.io/instance: gcpauth
-  app.kubernetes.io/component: controller
+kind: Kustomization
 resources:
 - gcpauth-controller-certificate.yaml
 - gcpauth-controller-clusterrole.yaml
@@ -12,3 +9,6 @@ resources:
 - gcpauth-controller-svc.yaml
 - gcpauth-mutwebhookcfg.yaml
 - profiles.gcpauth.policies.nuxeo.io-crd.yaml
+commonLabels:
+  app.kubernetes.io/component: controller
+  app.kubernetes.io/instance: gcpauth

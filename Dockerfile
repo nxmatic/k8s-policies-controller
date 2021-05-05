@@ -1,5 +1,6 @@
-FROM golang:1.16-buster AS build
+FROM golang:1.15-buster AS build
 
+ENV VERSION=latest
 ENV GOBIN=$GOPATH/bin
 
 ADD . /src/k8s-policies-controller

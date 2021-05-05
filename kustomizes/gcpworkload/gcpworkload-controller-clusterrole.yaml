@@ -1,23 +1,21 @@
-
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
   name: gcpworkload-controller
+  creationTimestamp: null
 rules:
-- apiGroups:
-  - ""
-  resources:
+- resources:
   - namespaces
+  apiGroups:
+  - ""
   verbs:
   - get
   - list
   - watch
-- apiGroups:
-  - gcpworkload.profile.nuuxeo.io
-  resources:
+- resources:
   - profiles
+  apiGroups:
+  - gcpworkload.profile.nuuxeo.io
   verbs:
   - create
   - delete
@@ -26,17 +24,17 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - gcpworkload.profile.nuuxeo.io
-  resources:
+- resources:
   - profiles/status
+  apiGroups:
+  - gcpworkload.profile.nuuxeo.io
   verbs:
   - get
   - patch
   - update
-- apiGroups:
-  - iam.cnrm.cloud.google.com
-  resources:
+- resources:
   - iampolicymembers
+  apiGroups:
+  - iam.cnrm.cloud.google.com
   verbs:
   - '*'

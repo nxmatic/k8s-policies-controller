@@ -14,39 +14,39 @@ spec:
         app.kubernetes.io/instance: gcpauth-controller
         app.kubernetes.io/name: k8s-policies-controller
     spec:
+      serviceAccountName: gcpauth-controller
       containers:
-      - args:
-        - --kind=gcpauth
+      - name: k8s-policies-controller
         image: k8s-policies-controller:latest
-        imagePullPolicy: Always
+        args:
+        - --kind=gcpauth
+        ports:
+        - name: webhook-server
+          protocol: TCP
+          containerPort: 9443
+        - name: metrics-server
+          protocol: TCP
+          containerPort: 8080
+        resources: {}
+        volumeMounts:
+        - name: cert
+          readOnly: true
+          mountPath: /tmp/k8s-webhook-server/serving-certs
         livenessProbe:
           httpGet:
-            path: /metrics
             port: metrics-server
+            path: /metrics
             scheme: HTTP
-        name: k8s-policies-controller
-        ports:
-        - containerPort: 9443
-          name: webhook-server
-          protocol: TCP
-        - containerPort: 8080
-          name: metrics-server
-          protocol: TCP
-        volumeMounts:
-        - mountPath: /tmp/k8s-webhook-server/serving-certs
-          name: cert
-          readOnly: true
         readinessProbe:
           httpGet:
-            path: /metrics
             port: metrics-server
+            path: /metrics
             scheme: HTTP
-        resources: {}
+        imagePullPolicy: Always
         securityContext: {}
-      securityContext: {}
-      serviceAccountName: gcpauth-controller
       volumes:
       - name: cert
         secret:
           defaultMode: 420
           secretName: gcpauth-controller-tls
+      securityContext: {}

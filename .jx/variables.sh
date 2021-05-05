@@ -8,7 +8,7 @@ export DOCKER_REGISTRY_ORG='nuxeo'
 export DOMAIN='nos.build.nuxeo.com'
 export GIT_BRANCH='pfouh'
 export JX_CHART_REPOSITORY='https://storage.googleapis.com/charts-staging'
-export KANIKOFLAGS='--use-new-run -cache=true --cleanup --snapshotMode=redo  --build-arg DOCKER_REGISTRY=$DOCKER_REGISTRY  --build-arg DOCKER_REGISTRY_ORG=$DOCKER_REGISTRY_ORG --build-arg VERSION=$VERSION'
+export KANIKO_FLAGS='--use-new-run -cache=true --cleanup --snapshotMode=redo  --build-arg DOCKER_REGISTRY=$DOCKER_REGISTRY  --build-arg DOCKER_REGISTRY_ORG=$DOCKER_REGISTRY_ORG --build-arg VERSION=$VERSION'
 export MINK_AS='tekton-bot'
 export MINK_IMAGE='gcr.io/build-jx-prod/nuxeo/k8s-policies-controller:'
 export NAMESPACE_SUB_DOMAIN='-jx.'
@@ -16,3 +16,9 @@ export PIPELINE_KIND='release'
 export PUSH_CONTAINER_REGISTRY='gcr.io/build-jx-prod'
 export REPO_NAME='k8s-policies-controller'
 export REPO_OWNER='nuxeo'
+
+
+# content from git...
+eval export KANIKO_FLAGS=$KANIKO_FLAGS
+
+

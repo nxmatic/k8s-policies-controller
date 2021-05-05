@@ -16,8 +16,8 @@ spec:
     spec:
       serviceAccountName: gcpauth-controller
       containers:
-      - name: k8s-policies-controller
-        image: k8s-policies-controller:latest
+      - name: controller
+        image: k8s-policies-controller:latest {"$kpt-set":"image"}
         args:
         - --kind=gcpauth
         ports:

@@ -17,7 +17,7 @@ spec:
       serviceAccountName: node-controller
       containers:
       - name: controller
-        image: k8s-policies-controller
+        image: k8s-policies-controller:latest {"$kpt-set":"image"}
         args:
         - --zap-devel
         - --kind=node

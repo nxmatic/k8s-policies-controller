@@ -6,7 +6,7 @@ resources:
 - gcpworkload
 - node
 images:
-- name: k8s-policy-controller
+- name: k8s-policies-controller:latest
   newName: gcr.io/build-jx-prod/nuxeo/k8s-policies-controller # {"$kpt-set":"image-name"}
   newTag: latest # {"$kpt-set":"image-tag"}
 transformers:

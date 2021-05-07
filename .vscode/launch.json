@@ -15,7 +15,7 @@
                 "--zap-devel",
                 "--zap-encoder=console",
                 "--zap-log-level=debug",
-                "--kind=gcpworkloadpolicyprofile"
+                "--kind=gcpworkload"
             ]
         },
         {
@@ -29,7 +29,7 @@
                 "--zap-devel",
                 "--zap-encoder=console",
                 "--zap-log-level=debug",
-                "--kind=nodepolicyprofile"
+                "--kind=node"
             ]
         },
         {
@@ -43,7 +43,7 @@
                 "--zap-devel",
                 "--zap-encoder=console",
                 "--zap-log-level=debug",
-                "--kind=gcpauthpolicyprofile"
+                "--kind=gcpauth"
             ]
         },
     ]

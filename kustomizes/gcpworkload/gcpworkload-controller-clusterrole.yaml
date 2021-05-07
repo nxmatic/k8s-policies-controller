@@ -13,9 +13,17 @@ rules:
   - list
   - watch
 - resources:
+  - serviceaccounts
+  apiGroups:
+  - ""
+  verbs:
+  - list
+  - patch
+  - watch
+- resources:
   - profiles
   apiGroups:
-  - gcpworkload.profile.nuuxeo.io
+  - gcpworkload.policies.nuxeo.io
   verbs:
   - create
   - delete
@@ -27,7 +35,7 @@ rules:
 - resources:
   - profiles/status
   apiGroups:
-  - gcpworkload.profile.nuuxeo.io
+  - gcpworkload.policies.nuxeo.io
   verbs:
   - get
   - patch
@@ -37,4 +45,7 @@ rules:
   apiGroups:
   - iam.cnrm.cloud.google.com
   verbs:
-  - '*'
+  - create
+  - get
+  - list
+  - watch

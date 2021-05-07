@@ -3,6 +3,6 @@ kind: Namespace
 metadata:
   name: sandbox
   annotations:
-    node.policies.nuxeo.io/profile: policies-test
     gcpauth.policies.nuxeo.io/profile: policies-test
     gcpworkload.policies.nuxeo.io/profile: policies-test
+    node.policies.nuxeo.io/profile: policies-test

@@ -36,11 +36,11 @@ func (r *reconciler) Reconcile(ctx context.Context, o reconcile.Request) (reconc
 }
 
 func (r *reconciler) deleteHandler(name string) (reconcile.Result, error) {
-	r.Interface.DefaultMeta = meta_api.ObjectMeta{}
+	r.DefaultMetaSupplier.Write(&meta_api.ObjectMeta{})
 	return end, nil
 }
 
 func (r *reconciler) updateHandler(namespace *core_api.Namespace) (reconcile.Result, error) {
-	r.Interface.DefaultMeta = namespace.ObjectMeta
+	r.DefaultMetaSupplier.Write(&namespace.ObjectMeta)
 	return end, nil
 }

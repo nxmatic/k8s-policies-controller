@@ -39,7 +39,7 @@ func (collector ProfileCollector) addNames(meta k8s_meta_api.ObjectMeta) {
 	if value, ok := meta.Annotations[collector.supplier.Key()]; ok {
 		for _, name := range strings.Split(value, ",") {
 			name = strings.TrimSpace(name)
-			if profile, err := collector.supplier.Get(name); err != nil {
+			if profile, err := collector.supplier.Get(name); err == nil {
 				collector.accumulator[profile] = empty
 			}
 		}
@@ -48,7 +48,7 @@ func (collector ProfileCollector) addNames(meta k8s_meta_api.ObjectMeta) {
 
 func (collector ProfileCollector) Profiles() []ProfileGetter {
 	profiles := make([]ProfileGetter, 0, len(collector.accumulator))
-	for profile, _ := range collector.accumulator {
+	for profile := range collector.accumulator {
 		n := len(profiles)
 		profiles = profiles[0 : n+1]
 		profiles[n] = profile

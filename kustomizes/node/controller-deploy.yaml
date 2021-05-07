@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller
+spec:
+  template:
+    spec:
+      serviceAccountName: controller
+      containers:
+      - name: controller
+        args:
+        - --zap-devel
+        - --zap-log-level=debug
+        - --kind=node

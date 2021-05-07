@@ -27,13 +27,13 @@ func (p *serviceaccountPatcher) addLabelsPatch() reviewer.PatchOperation {
 			Op:   "add",
 			Path: "/metadata/labels",
 			Value: map[string]string{
-				"gcpauth.profile.nuuxeo.io/profile": p.Profile.Name,
+				gcpauth_api.ProfilesKey.String(): p.Profile.Name,
 			},
 		}
 	}
 	return reviewer.PatchOperation{
 		Op:    "add",
-		Path:  "/metadata/labels/gcpauth.profile.nuuxeo.io~1profile",
+		Path:  "/metadata/labels/" + gcpauth_api.ProfilesKey.Encoded(),
 		Value: p.Profile.ObjectMeta.Name,
 	}
 }

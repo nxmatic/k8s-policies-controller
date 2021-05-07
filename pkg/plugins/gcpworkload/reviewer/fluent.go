@@ -119,10 +119,9 @@ func (stage *RequestedProfileStage) End() *RequestedServiceAccountStage {
 }
 
 func (stage *RequestedServiceAccountStage) End() *spi.WhenStage {
+	patcher := NewServiceAccountPatcher(&stage.ServiceAccount, &stage.Profile)
 	return &spi.WhenStage{
 		GivenStage: stage.GivenStage,
-		Patcher: &serviceaccountPatcher{
-			ServiceAccount: &stage.ServiceAccount,
-			Profile:        &stage.Profile,
-		}}
+		Patcher:    patcher,
+	}
 }

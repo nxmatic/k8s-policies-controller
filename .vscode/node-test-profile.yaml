@@ -3,16 +3,13 @@ kind: Profile
 metadata:
   name: node-test
 spec:
-  podSelector:
-    matchLabels:
-      node/test: "true"
   nodeSelector:
     type: "stateless"
   tolerations:
-  - key: "type"
-    operator: "Equal"
-    value: "stateless"
+  - value: "stateless"
     effect: "NoSchedule"
+    key: "type"
+    operator: "Equal"
   nodeAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - preference:
@@ -22,3 +19,6 @@ spec:
           values:
           - stateless
       weight: 1
+  podSelector:
+    matchLabels:
+      node/test: "true"

@@ -8,6 +8,8 @@ commonlabels:
   app.kubernetes.io/instance: node
 components:
 - ../controller
+patches:
+- path: controller-deploy.yaml
 transformers:
 - |-
   apiVersion: builtin
@@ -18,10 +20,12 @@ transformers:
   fieldSpecs:
   - kind: Certificate
     path: metadata/name
-  - kind: ClusterRole
-    path: metadata/name
   - kind: ClusterRoleBinding
     path: metadata/name
+  - kind: ClusterRoleBinding
+    path: roleRef/name
+  - kind: ClusterRoleBinding
+    path: subjects/name
   - kind: Deployment
     path: metadata/name
   - kind: ServiceAccount

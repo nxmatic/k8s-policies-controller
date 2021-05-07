@@ -7,7 +7,7 @@ include make.d/os.mk
 controller-gen.bin := $(shell which controller-gen)
 controller-gen.bin := $(if $(controller-gen.bin),$(controller-gen.bin),$(GOPATH)/bin/controller-gen)
 
-make.d make.d/os.mk make.d/macros.mk:
+make.d make.d/os.mk make.d/macros.mk&:
 	@: $(info loading git sub modules)
 	git submodule init
 	git submodule update
@@ -16,7 +16,7 @@ ifndef
 NAMESPACE := jx
 endif
 ifndef VERSION
-VERSION := $(shell git describe --tags| sed -r 's/^v//')
+VERSION := $(shell git describe --always --tags| sed -r 's/^v//')
 endif
 VERSION_PKG := $(PKG)/pkg/version
 VERSION_DATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
@@ -33,7 +33,7 @@ BUILD_IMAGE := golang:1.15-buster
 
 
 .PHONY: all
-all: dev
+all: generate
 
 
 .PHONY: release
@@ -109,13 +109,12 @@ manifest.yaml: image:=$(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/$(DOCKER_REGIST
 manifest.yaml: tag:=$(VERSION)
 
 
-controller-gen: | $(controller-gen.bin) $(jx-cli.bin) $(kustomize.bin)
-
 .PHONY: controller-gen
-controller-gen:
+controller-gen: | $(controller-gen.bin) $(jx.bin) $(kustomize.bin)
 	@: $(info generating controller descriptors)
 	$(foreach package,$(packages),$(script))
-	$(jx-cli.bin) gitops rename --dir=kustomizes
+	jx cli gitops rename --dir=kustomizes
+
 
 controller-gen: packages := gcpauth gcpworkload node meta
 controller-gen: script=$(controller-gen.script)
@@ -141,14 +140,6 @@ version:
 
 VERSION::
 	@echo v$(VERSION_TAG) > $(@)
-
-null  :=
-space := $(null) #
-comma := ,
-
-define newline :=
-
-endef
 
 # Run go vet against code
 vet:

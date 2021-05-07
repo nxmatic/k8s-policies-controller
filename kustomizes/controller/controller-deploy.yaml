@@ -20,6 +20,7 @@ spec:
         image: k8s-policies-controller:latest
         args:
         - --zap-devel
+        - --zap-log-level=debug
         - --kind=node
         ports:
         - name: webhook-server

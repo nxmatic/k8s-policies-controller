@@ -32,13 +32,13 @@ func (p *patcher) addLabelProfilePatch() []reviewer.PatchOperation {
 			Op:   "add",
 			Path: "/metadata/labels",
 			Value: map[string]string{
-				"node.nuxeo.io/profile": p.Profile.Name,
+				nodepolicy_api.ProfilesKey.String(): p.Profile.Name,
 			},
 		})
 	}
 	return append(p.Patch, reviewer.PatchOperation{
 		Op:    "add",
-		Path:  "/metadata/labels/node.nuxeo.io~1profile",
+		Path:  "/metadata/labels/" + nodepolicy_api.ProfilesKey.Encoded(),
 		Value: p.Profile.Name})
 }
 

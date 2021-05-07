@@ -48,12 +48,10 @@ func (p *plugin) Add(mgr manager.Manager) error {
 	if err := core_api.SchemeBuilder.AddToScheme(scheme); err != nil {
 		return errors.Wrap(err, "failed to load core scheme")
 	}
-	if k8s, err := k8s.NewInterface(mgr); err != nil {
-		return errors.Wrap(err, "failed to acquire k8s interface")
-	} else {
-		namespace_spi.Add(_name, mgr, &k8s.Interface)
-		reviewer_spi.Add(_name, mgr, &k8s.Interface, _hooks)
-	}
+	k8s := k8s.NewInterface(mgr)
+
+	namespace_spi.Add(_name, mgr, &k8s.Interface)
+	reviewer_spi.Add(_name, mgr, &k8s.Interface, _hooks)
 	return nil
 }
 

@@ -1,4 +1,4 @@
-apiVersion: config.k8s.io/v1alpha1
+apiVersion: kpt.dev/v1alpha1
 kind: Kptfile
 metadata:
   name: k8s-policies-controller

@@ -15,7 +15,7 @@ rules:
 - resources:
   - profiles
   apiGroups:
-  - node.profile.nuuxeo.io
+  - node.policies.nuxeo.io
   verbs:
   - create
   - delete
@@ -27,7 +27,7 @@ rules:
 - resources:
   - profiles/status
   apiGroups:
-  - node.profile.nuuxeo.io
+  - node.policies.nuxeo.io
   verbs:
   - get
   - patch

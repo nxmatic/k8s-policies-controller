@@ -52,10 +52,8 @@ func (p *plugin) Add(manager manager.Manager) error {
 	if err := core_api.SchemeBuilder.AddToScheme(scheme); err != nil {
 		return errors.Wrap(err, "failed to load core scheme")
 	}
-	k8s, err := k8s.NewInterface(manager)
-	if err != nil {
-		return errors.Wrap(err, "cannot acquire k8s interface")
-	}
+	k8s := k8s.NewInterface(manager)
+
 	reconciler.Add(manager, k8s)
 	namespace_spi.Add(_name, manager, &k8s.Interface)
 	reviewer_spi.Add(_name, manager, &k8s.Interface, _hooks)

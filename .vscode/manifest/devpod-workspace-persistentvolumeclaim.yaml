@@ -2,6 +2,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: devpod-workspace
+  namespace: policies
+  labels:
+    kapp.k14s.io/app: "1619191709372783000"
 spec:
   resources:
     requests:

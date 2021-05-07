@@ -1,8 +1,21 @@
-kind: Kustomization
+namespace: policies
 apiVersion: kustomize.config.k8s.io/v1beta1
-namespace: k8s-policys
+kind: Kustomization
+resources:
+- ../../kustomizes
+- devpod-cm.yaml
+- devpod-workspace-persistentvolumeclaim.yaml
+- gcpauth-devpod-deploy.yaml
+- gcpworkload-devpod-deploy.yaml
+- node-devpod-deploy.yaml
 commonLabels:
   app.kubernetes.io/name: k8s-policies-controller
-namespace: sandbox
-resources:
-  - sandbox-ns.yaml
+  kapp.k14s.io/app: "1619191709372783000"
+  kapp.k14s.io/association: v1.271d94502fd2c6762ea470dc8349c60e
+images:
+- name: golang
+  newTag: 1.15-buster-supervisor
+patchesStrategicMerge:
+- gcpworkload-controller-deploy.yaml
+- gcpauth-controller-deploy.yaml
+- node-controller-deploy.yaml

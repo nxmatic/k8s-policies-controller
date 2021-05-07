@@ -9,3 +9,4 @@ k8s-policies-controller
 /.local
 /manifest.yaml
 /dist
+/.vscode/*.log

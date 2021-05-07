@@ -5,7 +5,6 @@ import (
 	gcpworkload_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/gcpworkload/v1alpha1"
 	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/gcpworkload/k8s"
 	"github.com/pkg/errors"
-	core_api "k8s.io/api/core/v1"
 	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller"
@@ -20,7 +19,14 @@ func Add(mgr manager.Manager, k8s *k8s.Interface) error {
 	reconciler := &reconciler{
 		k8s,
 	}
-	return add(mgr, reconciler)
+	synchronizer := newSynchronizer(k8s)
+
+	if err := add(mgr, reconciler); err != nil {
+		return err
+	}
+	mgr.Add(synchronizer)
+
+	return nil
 }
 
 // add adds a newReconcilierConfiguration Controller to mgr with r as the reconcile.Reconciler.
@@ -56,12 +62,11 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to patched gcp IAMPolicyMember
-
 	iamPolicyMemberResource := &source.Kind{
 		Type: &gcp_iam_api.IAMPolicyMember{
 			TypeMeta: meta_api.TypeMeta{
-				APIVersion: core_api.SchemeGroupVersion.String(),
-				Kind:       "Secrets",
+				APIVersion: gcp_iam_api.SchemeGroupVersion.String(),
+				Kind:       "IAMPolicyMember",
 			},
 		},
 	}

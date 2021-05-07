@@ -3,4 +3,4 @@ kind: ServiceAccount
 metadata:
   name: gcpauth-test
 imagePullSecrets:
-  - name: zoo
+- name: zoo

@@ -37,14 +37,11 @@ var (
 	SecretsResource  = core_api.SchemeGroupVersion.WithResource("secrets")
 )
 
-func NewInterface(mgr manager.Manager) (*Interface, error) {
-	spi, err := k8s_spi.NewInterface(mgr)
-	if err != nil {
-		return nil, err
-	}
+func NewInterface(mgr manager.Manager) *Interface {
+	spi := k8s_spi.NewInterface(mgr)
 	return &Interface{
 		Interface: *spi,
-	}, nil
+	}
 }
 
 func (s *Interface) ResolveProfile(meta meta_api.ObjectMeta) (*gcpauth_policy_api.Profile, error) {

@@ -1,10 +1,12 @@
 package namespace
 
 import (
+	meta_api "github.com/nuxeo/k8s-policies-controller/pkg/apis/meta/v1alpha1"
 	"github.com/nuxeo/k8s-policies-controller/pkg/plugins/spi/k8s"
+
 	"github.com/pkg/errors"
-	core_api "k8s.io/api/core/v1"
-	meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
+	k8s_core_api "k8s.io/api/core/v1"
+	k8s_meta_api "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -28,20 +30,20 @@ func Add(name string, mgr manager.Manager, k8s *k8s.Interface) error {
 // add adds a newReconcilierConfiguration Controller to mgr with r as the reconcile.Reconciler.
 func add(ctrl controller.Controller, r reconcile.Reconciler) error {
 
-	// Watch for changes to primary resource GCPAuthPolicyProfile
+	// Watch for changes to primary resource Namespace
 	decorator := namespaceDecorator{handler: &handler.EnqueueRequestForObject{}}
 	resource := &source.Kind{
-		Type: &core_api.Namespace{
-			TypeMeta: meta_api.TypeMeta{
-				APIVersion: core_api.SchemeGroupVersion.String(),
+		Type: &k8s_core_api.Namespace{
+			TypeMeta: k8s_meta_api.TypeMeta{
+				APIVersion: k8s_core_api.SchemeGroupVersion.String(),
 				Kind:       "Namespace",
 			},
 		},
 	}
 	predicate, err := predicate.LabelSelectorPredicate(
-		meta_api.LabelSelector{
+		k8s_meta_api.LabelSelector{
 			MatchLabels: map[string]string{
-				"policies.nuxeo.io/watch": "true",
+				meta_api.WatchKey.String(): "true",
 			}})
 	if err != nil {
 		return errors.WithStack(err)

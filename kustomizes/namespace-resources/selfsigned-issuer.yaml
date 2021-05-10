@@ -3,6 +3,6 @@ kind: Issuer
 metadata:
   name: selfsigned
   labels:
-    app.kubernetes.io/name: k8s-policies-controller
+    app.kubernetes.io/name: k8s-controller
 spec:
   selfSigned: {}

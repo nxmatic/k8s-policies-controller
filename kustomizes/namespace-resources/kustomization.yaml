@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 - policies-ns.yaml
 - selfsigned-issuer.yaml
-- policy-controller-ca-certificate.yaml
-- policy-controller-issuer.yaml
+- controller-ca-certificate.yaml
+- controller-issuer.yaml
 commonlabels:
   app.kubernetes.io/component: namespace

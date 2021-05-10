@@ -8,6 +8,6 @@ spec:
   - controller.policies.svc
   - controller.policies.svc.cluster.local
   issuerRef:
-    name: policy-controller
+    name: controller
     kind: Issuer
   secretName: controller-tls

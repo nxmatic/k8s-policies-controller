@@ -16,7 +16,7 @@ webhooks:
   failurePolicy: Ignore
   objectSelector:
     matchExpressions:
-    - key: app
+    - key: app.kubernetes.io/name
       operator: NotIn
       values:
       - k8s-policies-controller

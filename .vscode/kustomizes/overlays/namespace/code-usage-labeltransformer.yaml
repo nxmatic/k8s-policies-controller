@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: code-usage
+labels:
+  usage: build
+fieldSpecs:
+- path: metadata/labels
+  create: true

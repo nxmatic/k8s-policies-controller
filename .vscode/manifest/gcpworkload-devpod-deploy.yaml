@@ -1,19 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: gcpworkload
+    app.kubernetes.io/name: k8s-policies-controller
+    kapp.k14s.io/app: "1619191709372783000"
+    usage: build
   name: gcpworkload-devpod
   namespace: policies
-  labels:
-    app.kubernetes.io/instance: devpod
-    kapp.k14s.io/app: "1619191709372783000"
 spec:
+  progressDeadlineSeconds: 600
   replicas: 0
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app.kubernetes.io/component: controller
       app.kubernetes.io/instance: gcpworkload
       app.kubernetes.io/name: k8s-policies-controller
       kapp.k14s.io/app: "1619191709372783000"
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -21,34 +31,34 @@ spec:
         app.kubernetes.io/instance: gcpworkload
         app.kubernetes.io/name: k8s-policies-controller
         kapp.k14s.io/app: "1619191709372783000"
-        usage: code
     spec:
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      serviceAccountName: gcpworkload-controller
-      schedulerName: default-scheduler
       containers:
-      - name: dev
+      - command:
+        - /bin/sleep
+        - infinity
         image: golang:1.15-buster
-        command:
-        - /usr/bin/tail
-        - -f
-        - /dev/null
+        imagePullPolicy: Always
+        name: builder
         ports:
-        - name: webhook-server
+        - containerPort: 9443
+          name: webhook-server
           protocol: TCP
-          containerPort: 9443
-        volumeMounts:
-        - name: cert
-          readOnly: true
-          mountPath: /tmp/k8s-webhook-server/serving-certs
-        - name: workspace
-          readOnly: false
-          mountPath: /root
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+        - mountPath: /root
+          name: workspace
+          readOnly: false
+      dnsPolicy: ClusterFirst
+      labels:
+        kapp.k14s.io/app: "1619191709372783000"
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      serviceAccountName: gcpworkload-controller
+      terminationGracePeriodSeconds: 30
       volumes:
       - name: cert
         secret:
@@ -57,10 +67,3 @@ spec:
       - name: workspace
         persistentVolumeClaim:
           claimName: devpod-workspace
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600

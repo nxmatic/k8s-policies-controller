@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/name: k8s-policies-controller
+  name: controller-ca
+spec:
+  commonName: policies.svc
+  isCA: true
+  issuerRef:
+    name: selfsigned
+  secretName: controller-ca
+  usages:
+  - server auth
+  - client auth

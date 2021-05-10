@@ -1,54 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: node
+    app.kubernetes.io/name: k8s-policies-controller
+    kapp.k14s.io/app: "1619191709372783000"
+    usage: build
   name: node-devpod
   namespace: policies
-  labels:
-    app.kubernetes.io/instance: devpod
-    kapp.k14s.io/app: "1619191709372783000"
 spec:
-  spec:
-    restartPolicy: Always
-    terminationGracePeriodSeconds: 30
-    dnsPolicy: ClusterFirst
-    serviceAccountName: node-controller
-    schedulerName: default-scheduler
-    containers:
-    - name: dev
-      image: golang:1.15-buster
-      command:
-      - /usr/bin/tail
-      - -f
-      - /dev/null
-      ports:
-      - name: webhook-server
-        protocol: TCP
-        containerPort: 9443
-      volumeMounts:
-      - name: cert
-        readOnly: true
-        mountPath: /tmp/k8s-webhook-server/serving-certs
-      - name: workspace
-        readOnly: false
-        mountPath: /root
-      terminationMessagePath: /dev/termination-log
-      terminationMessagePolicy: File
-      imagePullPolicy: Always
-    volumes:
-    - name: cert
-      secret:
-        defaultMode: 420
-        secretName: node-controller-tls
-    - name: workspace
-      persistentVolumeClaim:
-        claimName: devpod-workspace
+  progressDeadlineSeconds: 600
   replicas: 0
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app.kubernetes.io/component: controller
       app.kubernetes.io/instance: node
       app.kubernetes.io/name: k8s-policies-controller
       kapp.k14s.io/app: "1619191709372783000"
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -56,11 +31,39 @@ spec:
         app.kubernetes.io/instance: node
         app.kubernetes.io/name: k8s-policies-controller
         kapp.k14s.io/app: "1619191709372783000"
-        usage: code
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
+    spec:
+      containers:
+      - command:
+        - /bin/sleep
+        - infinity
+        image: golang:1.15-buster
+        imagePullPolicy: Always
+        name: builder
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+        - mountPath: /root
+          name: workspace
+          readOnly: false
+      dnsPolicy: ClusterFirst
+      labels:
+        kapp.k14s.io/app: "1619191709372783000"
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      serviceAccountName: node-controller
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: node-controller-tls
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: devpod-workspace

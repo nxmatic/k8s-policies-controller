@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: controller
+spec:
+  commonName: gcpauth-controller.svc
+  dnsNames:
+  - gcpauth-controller.policies.svc
+  - gcpauth-controller.policies.svc.cluster.local
+  secretName: gcpauth-controller-tls

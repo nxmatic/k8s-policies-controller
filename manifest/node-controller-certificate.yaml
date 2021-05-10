@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: node
+    app.kubernetes.io/name: k8s-policies-controller
+  name: node-controller
+spec:
+  commonName: node-controller.policies.svc
+  dnsNames:
+  - node-controller.policies.svc
+  - node-controller.policies.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: controller
+  secretName: node-controller-tls

@@ -46,9 +46,11 @@ var (
 
 func NewInterface(mgr manager.Manager) *Interface {
 	spi := k8s_spi.NewInterface(mgr)
-	return &Interface{
+	k8s := &Interface{
 		Interface: *spi,
 	}
+	k8s.Interface.Outer = k8s
+	return k8s
 }
 
 func (k8s *Interface) ResolveProfile(meta k8s_meta_api.ObjectMeta) (*gcpworkload_api.Profile, error) {

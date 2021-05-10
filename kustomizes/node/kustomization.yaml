@@ -4,31 +4,6 @@ resources:
 - node-controller-clusterrole.yaml
 - node-mutwebhookcfg.yaml
 - profiles.node.policies.nuxeo.io-crd.yaml
+- controller
 commonlabels:
   app.kubernetes.io/instance: node
-components:
-- ../controller
-patches:
-- path: controller-deploy.yaml
-transformers:
-- |-
-  apiVersion: builtin
-  kind: PrefixSuffixTransformer
-  metadata:
-    name: controller
-  prefix: node-
-  fieldSpecs:
-  - kind: Certificate
-    path: metadata/name
-  - kind: ClusterRoleBinding
-    path: metadata/name
-  - kind: ClusterRoleBinding
-    path: roleRef/name
-  - kind: ClusterRoleBinding
-    path: subjects/name
-  - kind: Deployment
-    path: metadata/name
-  - kind: ServiceAccount
-    path: metadata/name
-  - kind: Service
-    path: metadata/name

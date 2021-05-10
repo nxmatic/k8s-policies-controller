@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: gcpworkload
+    app.kubernetes.io/name: k8s-policies-controller
+  name: gcpworkload-controller
+spec:
+  commonName: gcpworkload-controller.svc
+  dnsNames:
+  - gcpworkload-controller.policies.svc
+  - gcpworkload-controller.policies.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: controller
+  secretName: gcpworkload-controller-tls

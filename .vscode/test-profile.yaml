@@ -1,0 +1,12 @@
+apiVersion: gcpworkload.policies.nuxeo.io/v1alpha1
+kind: Profile
+metadata:
+  name: test
+spec:
+  project: build-jx-prod
+  selector:
+    namespaces: ^policies$
+    objects:
+      matchLabels:
+        policies.nuxeo.io/test: workload
+  serviceaccount: nos-ko

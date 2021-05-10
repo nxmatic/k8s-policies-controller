@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+components:
+- ../../controller
+namePrefix: gcpworkload-
+patches:
+- path: controller-deploy.yaml
+- path: controller-certificate.yaml
+- path: controller-crb.yaml

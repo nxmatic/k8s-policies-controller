@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/name: k8s-policies-controller
+  name: controller
+spec:
+  ca:
+    secretName: controller-ca

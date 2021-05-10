@@ -1,0 +1,10 @@
+apiVersion: builtin
+kind: PrefixSuffixTransformer
+metadata:
+  name: gcpauth
+prefix: "gcpauth-"
+fieldSpecs:
+- kind: Deployment
+  path: metadata/name
+- kind: Deployment
+  path: spec/template/spec/serviceAccountName

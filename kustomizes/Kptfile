@@ -2,34 +2,3 @@ apiVersion: kpt.dev/v1alpha1
 kind: Kptfile
 metadata:
   name: k8s-policies-controller
-openAPI:
-  definitions:
-    io.k8s.cli.setters.docker-registry:
-      x-k8s-cli:
-        setter:
-          name: docker-registry
-          value: "gcr.io/build-jx-prod"
-          isSet: true
-    io.k8s.cli.setters.docker-org:
-      x-k8s-cli:
-        setter:
-          name: docker-org
-          isSet: true
-    io.k8s.cli.setters.image-tag:
-      x-k8s-cli:
-        setter:
-          name: image-tag
-          value: 0.0.1
-          isSet: true
-    io.k8s.cli.substitutions.image:
-      x-k8s-cli:
-        substitution:
-          name: image
-          pattern: ${docker-registry}/${docker-org}/k8s-policies-controller:${image-tag}
-          values:
-          - marker: ${docker-registry}
-            ref: '#/definitions/io.k8s.cli.setters.docker-registry'
-          - marker: ${docker-org}
-            ref: '#/definitions/io.k8s.cli.setters.docker-org'
-          - marker: ${docker-tag}
-            ref: '#/definitions/io.k8s.cli.setters.docker-tag'

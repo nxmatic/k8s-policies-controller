@@ -33,6 +33,7 @@ func Given() *RequestedServiceAccountStage {
 
 func (stage *RequestedServiceAccountStage) RequestedObject(o *spi.GivenStage) *RequestedServiceAccountStage {
 	stage.GivenStage = o
+	stage.Interface = o.Outer.(*k8s.Interface)
 	return stage
 }
 

@@ -39,9 +39,11 @@ var (
 
 func NewInterface(mgr manager.Manager) *Interface {
 	spi := k8s_spi.NewInterface(mgr)
-	return &Interface{
+	k8s := &Interface{
 		Interface: *spi,
 	}
+	k8s.Interface.Outer = k8s
+	return k8s
 }
 
 func (s *Interface) ResolveProfile(meta meta_api.ObjectMeta) (*gcpauth_policy_api.Profile, error) {

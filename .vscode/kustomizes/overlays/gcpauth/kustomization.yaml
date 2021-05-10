@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../bases/devpod
+commonLabels:
+  app.kubernetes.io/instance: gcpauth
+patches:
+- path: devpod-deploy.yaml
+transformers:
+- gcpauth-prefixsuffixtransformer.yaml

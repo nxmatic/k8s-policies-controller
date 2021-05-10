@@ -3,3 +3,7 @@ kind: ServiceAccount
 metadata:
   name: test
   namespace: policies
+  annotations:
+    gcpworkload.policies.nuxeo.io/profiles: test
+  labels:
+    policies.nuxeo.io/test: gcpworkload

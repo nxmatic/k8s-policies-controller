@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: gcpauth
+    app.kubernetes.io/name: k8s-policies-controller
+  name: gcpauth-controller
+spec:
+  commonName: gcpauth-controller.svc
+  dnsNames:
+  - gcpauth-controller.policies.svc
+  - gcpauth-controller.policies.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: controller
+  secretName: gcpauth-controller-tls

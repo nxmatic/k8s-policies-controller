@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: gcpworkload
+    app.kubernetes.io/name: k8s-policies-controller
+  name: gcpworkload-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gcpworkload-controller
+subjects:
+- kind: ServiceAccount
+  name: gcpworkload-controller

@@ -4,31 +4,6 @@ resources:
 - gcpworkload-controller-clusterrole.yaml
 - gcpworkload-mutwebhookcfg.yaml
 - profiles.gcpworkload.policies.nuxeo.io-crd.yaml
+- controller
 commonlabels:
   app.kubernetes.io/instance: gcpworkload
-components:
-- ../controller
-patches:
-- path: controller-deploy.yaml
-transformers:
-- |-
-  apiVersion: builtin
-  kind: PrefixSuffixTransformer
-  metadata:
-    name: controller
-  prefix: gcpworkload-
-  fieldSpecs:
-  - kind: Certificate
-    path: metadata/name
-  - kind: ClusterRoleBinding
-    path: metadata/name
-  - kind: ClusterRoleBinding
-    path: roleRef/name
-  - kind: ClusterRoleBinding
-    path: subjects/name
-  - kind: Deployment
-    path: metadata/name
-  - kind: ServiceAccount
-    path: metadata/name
-  - kind: Service
-    path: metadata/name

@@ -1,13 +1,10 @@
-.ONESHELL:
-.SHELLFLAGS = -e -c
-
-include make.d/macros.mk
+include make.d/make.mk
 include make.d/os.mk
 
 controller-gen.bin := $(shell which controller-gen)
 controller-gen.bin := $(if $(controller-gen.bin),$(controller-gen.bin),$(GOPATH)/bin/controller-gen)
 
-make.d make.d/os.mk make.d/macros.mk&:
+make.d make.d/make.mk make.d/os.mk&:
 	@: $(info loading git sub modules)
 	git submodule init
 	git submodule update
@@ -54,7 +51,7 @@ release~binaries:
 .PHONY: release~kustomizes
 release~kustomizes:
 	@: $(info versioning kustomizes@$(VERSION_TAG))
-	[ -z "$$(git status -s)" ] || git commit -m 'chore: versioning kustomizes $(VERSION_TAG)' kustomizes
+	[ -z "$$(git status -s)" ] || git commit -m 'chore: versioning kustomizes $(VERSION_TAG)' kustomizes manifest
 	git tag -f $(VERSION_TAG) && git push -f origin $(VERSION_TAG)
 
 release~binaries: export GITHUB_TOKEN=$(GIT_TOKEN)
@@ -67,7 +64,9 @@ release~binaries: export export ROOTPACKAGE = $(PKG)
 
 .PHONY: generate
 generate: controller-gen
-generate: manifest.yaml
+generate: kustomize~fmt
+generate: kustomize~edit
+generate: manifest
 
 .PHONY: build
 build:: generate compile
@@ -89,24 +88,33 @@ image:
 image: $(BIN)
 
 .PHONY: unkustomizes
-unkustomizes: manifest.yaml
-	kubectl delete -f manifest.yaml || true
+unkustomizes: 
+	kubectl delete -f manifest|| true
 
 .PHONY: kustomizes
-kustomizes: manifest.yaml
-	kubectl apply -f manifest.yaml
+kustomizes: manifest
+	kubectl apply -f manifest
 
-
-manifest.yaml: $(wildcard kustomizes/*.yaml) $(wildcard kustomizes/*/*.yaml)
-
-manifest.yaml: | $(kustomize.bin) $(jx-cli.bin)
-	@: $(info generating manifest for $(image):$(tag))
+kustomize~edit: 
+	@: $(info tagging manifest with $(image):$(tag))
 	(cd kustomizes/controller && kustomize edit set image k8s-policies-controller:latest=$(image):$(tag))
-	$(kustomize.bin) cfg fmt kustomizes
-	$(kustomize.bin) build kustomizes -o manifest.yaml
 
-manifest.yaml: image:=$(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/$(DOCKER_REGISTRY_ORG)/$(IMAGE),$(IMAGE))
-manifest.yaml: tag:=$(VERSION)
+kustomize~edit: image:=$(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/$(DOCKER_REGISTRY_ORG)/$(IMAGE),$(IMAGE))
+kustomize~edit: tag:=$(VERSION)
+
+kustomize~fmt: 
+	@: $(info formatting kustomizes)
+	kustomize cfg fmt kustomizes
+
+manifest: 
+	@: $(info generating manifest)
+	git rm -fr manifest
+	mkdir manifest && kustomize build kustomizes -o manifest
+	jx cli gitops rename --dir=manifest
+	git add manifest
+
+manifest: $(wildcard kustomizes/*.yaml) $(wildcard kustomizes/*/*.yaml)
+manifest: | $(kustomize.bin) $(jx-cli.bin)
 
 
 .PHONY: controller-gen
@@ -115,7 +123,6 @@ controller-gen: | $(controller-gen.bin) $(jx.bin) $(kustomize.bin)
 	$(foreach package,$(packages),$(script))
 	jx cli gitops rename --dir=kustomizes
 
-
 controller-gen: packages := gcpauth gcpworkload node meta
 controller-gen: script=$(controller-gen.script)
 
@@ -123,11 +130,12 @@ define controller-gen.script =
 	$(controller-gen.bin) object paths=./pkg/apis/$(package)/...
 	$(controller-gen.bin) crd paths=./pkg/apis/$(package)/... output:crd:artifacts:config=kustomizes/$(package)
 	$(controller-gen.bin) rbac:roleName=$(package)-controller paths=./pkg/apis/$(package)/... output:rbac:artifacts:config=kustomizes/$(package)
+#	$(controller-gen.bin) webhook paths=./pkg/apis/$(package)/... output:webhook:artifacts:config=kustomizes/$(package)
 $(newline)
 endef
 
 # Run go fmt against code
-fmt:
+fmt: kustomize~fmt
 	go fmt ./...
 
 

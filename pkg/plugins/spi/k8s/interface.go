@@ -20,9 +20,10 @@ import (
 type (
 	Interface struct {
 		manager.Manager
+		Outer
 		*DefaultMetaSupplier
 	}
-
+	Outer               interface{}
 	DefaultMetaSupplier struct {
 		k8s   *Interface
 		meta  k8s_meta_api.ObjectMeta
@@ -47,9 +48,7 @@ func NewInterface(mgr manager.Manager) *Interface {
 		Manager:             mgr,
 		DefaultMetaSupplier: &DefaultMetaSupplier{},
 	}
-	k8s.DefaultMetaSupplier = &DefaultMetaSupplier{
-		k8s: k8s,
-	}
+	k8s.DefaultMetaSupplier.k8s = k8s
 	return k8s
 }
 

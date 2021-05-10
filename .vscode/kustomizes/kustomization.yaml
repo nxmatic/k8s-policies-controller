@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- overlays/kpt
+images:
+- name: builder
+  newName: golang
+  newTag: 1.15-buster

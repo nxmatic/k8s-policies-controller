@@ -1,13 +1,15 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: k8s-policies-controller
+    usage: build
   name: devpod-workspace
   namespace: policies
-  labels:
-    kapp.k14s.io/app: "1619191709372783000"
 spec:
+  accessModes:
+  - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi
-  accessModes:
-  - ReadWriteOnce

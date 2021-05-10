@@ -35,6 +35,7 @@ func Given() *RequestedPodStage {
 
 func (s *RequestedPodStage) RequestedObject(o *reviewer_spi.GivenStage) *RequestedPodStage {
 	s.GivenStage = o
+	s.Interface = o.Interface.Outer.(*k8s.Interface)
 	return s
 }
 

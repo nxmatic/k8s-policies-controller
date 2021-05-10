@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: gcpauth
+    app.kubernetes.io/name: k8s-policies-controller
+  name: gcpauth-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: gcpauth
+      app.kubernetes.io/name: k8s-policies-controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/instance: gcpauth
+        app.kubernetes.io/name: k8s-policies-controller
+    spec:
+      containers:
+      - args:
+        - --zap-devel
+        - --zap-log-level=debug
+        - --kind=gcpauth
+        image: k8s-policies-controller:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics-server
+        name: controller
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        - containerPort: 8080
+          name: metrics-server
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics-server
+            scheme: HTTP
+        resources: {}
+        securityContext: {}
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      securityContext: {}
+      serviceAccountName: gcpauth-controller
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: controller-tls

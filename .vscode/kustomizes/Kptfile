@@ -1,0 +1,11 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+upstream:
+openAPI:
+  definitions:
+    io.k8s.cli.setters.kapp-tag:
+      x-k8s-cli:
+        setter:
+          name: kapp-tag
+          value: "1619191709372783000"
+          isSet: true

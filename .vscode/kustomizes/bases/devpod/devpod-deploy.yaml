@@ -1,33 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gcpauth-devpod
+  name: devpod
   labels:
     app.kubernetes.io/instance: devpod
 spec:
   replicas: 0
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: controller
-      app.kubernetes.io/instance: gcpauth
-      app.kubernetes.io/name: k8s-policies-controller
   template:
-    metadata:
-      labels:
-        app.kubernetes.io/component: controller
-        app.kubernetes.io/instance: gcpauth
-        app.kubernetes.io/name: k8s-policies-controller
-        usage: code
     spec:
+      labels:
+        kapp.k14s.io/app: "1619191709372783000" # {"$kpt-set": "kapp-tag"}
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
-      serviceAccountName: gcpauth-controller
+      serviceAccountName: controller
       schedulerName: default-scheduler
       containers:
-      - name: dev
-        image: golang:1.14-buster
-        command: ["/usr/bin/tail", "-f", "/dev/null"]
+      - name: builder
+        image: builder
+        command: ["/bin/sleep", "infinity"]
         ports:
         - name: webhook-server
           protocol: TCP
@@ -43,13 +34,13 @@ spec:
         terminationMessagePolicy: File
         imagePullPolicy: Always
       volumes:
-      - name: cert
-        secret:
-          defaultMode: 420
-          secretName: gcpauth-controller-tls
       - name: workspace
         persistentVolumeClaim:
           claimName: devpod-workspace
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: controller-tls
   strategy:
     type: RollingUpdate
     rollingUpdate:

@@ -1,6 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gcpauth-controller
+  name: controller
 spec:
   replicas: 0

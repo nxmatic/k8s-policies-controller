@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: devpod
-  namespace: policies
   labels:
     cli-utils.sigs.k8s.io/inventory-id: 0316f903-61db-47f7-9401-757657e0a458
-    kapp.k14s.io/app: "1619191709372783000"
+  name: policies-devpod-kpt-inventory
+  namespace: default

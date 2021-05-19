@@ -23,7 +23,6 @@ type (
 	}
 	RequestedProfileStage struct {
 		*RequestedServiceAccountStage
-		*core_api.Namespace
 	}
 )
 
@@ -70,7 +69,7 @@ func (stage *RequestedKindStage) End() *RequestedServiceAccountStage {
 }
 
 func (stage *RequestedServiceAccountStage) RequestedProfile() *RequestedProfileStage {
-	return &RequestedProfileStage{stage, nil}
+	return &RequestedProfileStage{stage}
 }
 
 func (stage *RequestedProfileStage) Applies() *RequestedProfileStage {
@@ -83,7 +82,7 @@ func (stage *RequestedProfileStage) Applies() *RequestedProfileStage {
 		return stage
 	}
 
-	profile, err := stage.Interface.ResolveProfile(stage.Namespace.ObjectMeta)
+	profile, err := stage.Interface.ResolveProfile(stage.ServiceAccount.ObjectMeta)
 	if err != nil {
 		stage.Allow(err)
 		return stage

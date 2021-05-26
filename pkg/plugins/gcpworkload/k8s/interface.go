@@ -117,13 +117,13 @@ func (k8s *Interface) CreateIAMPolicyMember(profile *Profile, sa *k8s_core_api.S
 		profile.Spec.Project,
 		sa.ObjectMeta.Namespace, sa.ObjectMeta.Name)
 	external := fmt.Sprintf("projects/%s/serviceAccounts/%s@%s.iam.gserviceaccount.com",
-		profile.Spec.Project, sa.Name, profile.Spec.Project)
+		profile.Spec.Project, profile.Spec.ServiceAccount, profile.Spec.Project)
 	member := &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"apiVersion": "iam.cnrm.cloud.google.com/v1beta1",
 			"kind":       "IAMPolicyMember",
 			"metadata": map[string]interface{}{
-				"name":      fmt.Sprintf("%s-%s-%s", profile.Name, sa.Namespace, sa.Name),
+				"name":      fmt.Sprintf("%s-r-k8s-%s-%s", profile.Spec.ServiceAccount, sa.Namespace, sa.Name),
 				"namespace": sa.Namespace,
 				"labels": map[string]interface{}{
 					gcpworkload_api.WatchKey.String(): "true",

@@ -77,7 +77,7 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 	if !s.CanContinue() {
 		return s
 	}
-	profile, err := s.Interface.ResolveProfile(s.ServiceAccount.ObjectMeta)
+	profile, err := s.Interface.ResolveProfile(s.AdmissionRequest.Namespace, s.ServiceAccount.ObjectMeta)
 	if err != nil {
 		s.Allow(err)
 		return s

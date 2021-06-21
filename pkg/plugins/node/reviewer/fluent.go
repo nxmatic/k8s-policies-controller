@@ -95,7 +95,7 @@ func (s *RequestedProfileStage) Applies() *RequestedProfileStage {
 	if !s.CanContinue() {
 		return s
 	}
-	s.Profile, s.Error = s.Interface.ResolveProfile(s.Pod.ObjectMeta)
+	s.Profile, s.Error = s.Interface.ResolveProfile(s.AdmissionRequest.Namespace, s.Pod.ObjectMeta)
 	if s.Error != nil {
 		s.Allow(nil)
 		return s

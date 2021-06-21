@@ -46,8 +46,8 @@ func NewInterface(mgr manager.Manager) *Interface {
 	return k8s
 }
 
-func (s *Interface) ResolveProfile(meta meta_api.ObjectMeta) (*gcpauth_policy_api.Profile, error) {
-	if resolved, err := s.Interface.ResolveProfile(meta, s.newProfileCollector()); err != nil {
+func (s *Interface) ResolveProfile(namespace string, meta meta_api.ObjectMeta) (*gcpauth_policy_api.Profile, error) {
+	if resolved, err := s.Interface.ResolveProfile(namespace, meta, s.newProfileCollector()); err != nil {
 		return nil, err
 	} else {
 		profile := resolved.(ProfileAdaptor)

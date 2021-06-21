@@ -82,7 +82,7 @@ func (stage *RequestedProfileStage) Applies() *RequestedProfileStage {
 		return stage
 	}
 
-	profile, err := stage.Interface.ResolveProfile(stage.ServiceAccount.ObjectMeta)
+	profile, err := stage.Interface.ResolveProfile(stage.AdmissionRequest.Namespace, stage.ServiceAccount.ObjectMeta)
 	if err != nil {
 		stage.Allow(err)
 		return stage

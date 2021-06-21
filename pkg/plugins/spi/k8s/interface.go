@@ -77,14 +77,14 @@ func (k8s *Interface) GetServiceAccount(name string, namespace string) (*k8s_cor
 	return sa, nil
 }
 
-func (s *Interface) ResolveProfile(meta k8s_meta_api.ObjectMeta, collector ProfileCollector) (ProfileGetter, error) {
-	if err := s.ResolveProfiles(meta, &collector); err != nil {
+func (s *Interface) ResolveProfile(namespace string, meta k8s_meta_api.ObjectMeta, collector ProfileCollector) (ProfileGetter, error) {
+	if err := s.ResolveProfiles(namespace, meta, &collector); err != nil {
 		return nil, err
 	}
 	for _, profile := range collector.Profiles() {
 		selector := profile.GetSelector()
 		if selector.Namespaces != "" {
-			if ok, err := regexp.MatchString(selector.Namespaces, meta.Namespace); err != nil {
+			if ok, err := regexp.MatchString(selector.Namespaces, namespace); err != nil {
 				return nil, errors.New("Cannot evaluate " + selector.Namespaces + " on profile " + profile.GetName())
 			} else if !ok {
 				continue
@@ -104,8 +104,8 @@ func (s *Interface) ResolveProfile(meta k8s_meta_api.ObjectMeta, collector Profi
 	return nil, NoProfile
 }
 
-func (k8s *Interface) ResolveProfiles(resource k8s_meta_api.ObjectMeta, collector *ProfileCollector) error {
-	ns, err := k8s.GetNamespace(resource.Namespace)
+func (k8s *Interface) ResolveProfiles(namespace string, resource k8s_meta_api.ObjectMeta, collector *ProfileCollector) error {
+	ns, err := k8s.GetNamespace(namespace)
 	if err != nil {
 		return err
 	}

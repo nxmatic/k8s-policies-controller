@@ -53,8 +53,8 @@ func NewInterface(mgr manager.Manager) *Interface {
 	return k8s
 }
 
-func (k8s *Interface) ResolveProfile(meta k8s_meta_api.ObjectMeta) (*gcpworkload_api.Profile, error) {
-	if resolved, err := k8s.Interface.ResolveProfile(meta, k8s.newProfileCollector()); err != nil {
+func (k8s *Interface) ResolveProfile(namespace string, meta k8s_meta_api.ObjectMeta) (*gcpworkload_api.Profile, error) {
+	if resolved, err := k8s.Interface.ResolveProfile(namespace, meta, k8s.newProfileCollector()); err != nil {
 		return nil, err
 	} else {
 		profile := resolved.(ProfileAdaptor)
@@ -88,7 +88,7 @@ func (k8s *Interface) SynchronizeServiceAccounts(patch Patch, mainLogger logr.Lo
 			continue
 		}
 		logger := mainLogger.WithValues("namespace", item.Namespace, "service account", item.Name)
-		if profile, err := k8s.ResolveProfile(item.ObjectMeta); err == nil {
+		if profile, err := k8s.ResolveProfile(item.Namespace, item.ObjectMeta); err == nil {
 			logger = logger.WithValues("profile", profile.Name)
 			logger.Info("patching")
 			if err := k8s.CreateIAMPolicyMember(profile, &item); err != nil {

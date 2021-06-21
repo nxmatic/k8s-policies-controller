@@ -8,3 +8,7 @@ resources:
 - controller-svc.yaml
 commonLabels:
   app.kubernetes.io/component: controller
+images:
+- name: k8s-policies-controller:latest
+  newName: gcr.io/build-jx-prod/nuxeo/k8s-policies-controller
+  newTag: 0.0.3

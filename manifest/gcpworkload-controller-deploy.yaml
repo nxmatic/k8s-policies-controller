@@ -25,7 +25,7 @@ spec:
         - --zap-devel
         - --zap-log-level=debug
         - --kind=gcpworkload
-        image: gcr.io/build-jx-prod/nuxeo/k8s-policies-controller:0.0.4~1:latest
+        image: gcr.io/build-jx-prod/nuxeo/k8s-policies-controller:0.0.4-1-g06410a8-master
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

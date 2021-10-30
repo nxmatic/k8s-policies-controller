@@ -10,3 +10,4 @@ k8s-policies-controller
 /manifest.yaml
 /dist
 /.vscode/*.log
+.jx/variables.sh

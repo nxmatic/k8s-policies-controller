@@ -7,3 +7,16 @@ resources:
 - controller
 commonlabels:
   app.kubernetes.io/instance: gcpworkload
+patches:
+  - target:
+      kind: MutatingWebhookConfiguration
+      name: gcpworkload
+    patch: |-
+      apiVersion: admissionregistration.k8s.io/v1beta1
+      kind: MutatingWebhookConfiguration
+      metadata:
+        name: gcpworkload
+      webhooks:
+      - name: gcpworkload-controller.policies.svc.cluster.local
+        admissionReviewVersions:
+        - "v1beta1"

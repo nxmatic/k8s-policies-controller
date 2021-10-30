@@ -7,3 +7,16 @@ resources:
 - controller
 commonlabels:
   app.kubernetes.io/instance: gcpauth
+patches:
+  - target:
+      kind: MutatingWebhookConfiguration
+      name: gcpauth
+    patch: |-
+      apiVersion: admissionregistration.k8s.io/v1beta1
+      kind: MutatingWebhookConfiguration
+      metadata:
+        name: gcpauth
+      webhooks:
+      - name: gcpauth-controller.policies.svc.cluster.local
+        admissionReviewVersions:
+        - "v1beta1"

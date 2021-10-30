@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: k8s-policies-controller
   name: node-controller
 spec:
-  commonName: node-controller.policies.svc
+  commonName: node-controller.svc
   dnsNames:
   - node-controller.policies.svc
   - node-controller.policies.svc.cluster.local

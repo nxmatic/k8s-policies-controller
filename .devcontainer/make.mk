@@ -1,7 +1,13 @@
+include $(top-dir)/make.d/os.mk
 include $(top-dir)/make.d/docker.mk
 include $(top-dir)/make.d/docker-compose.mk
 
-.devcontainer.names := $(shell jq -M -r '.dockerComposeFile[]' .devcontainer/devcontainer.json)
+include $(cache-dir)/devcontainer.mk
+
+define devcontainer.cache.mk =
+.devcontainer.names := $(shell $(jq.bin) -M -r '.dockerComposeFile[]' .devcontainer/devcontainer.json)
+endef
+
 .devcontainer.files := $(addprefix .devcontainer/,$(.devcontainer.names))
 
 .devcontainer/devcontainer.yaml: .devcontainer/devcontainer.json

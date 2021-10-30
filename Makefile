@@ -1,5 +1,6 @@
 include make.d/make.mk
 include make.d/os.mk
+include make.d/version.mk
 
 include .devcontainer/make.mk
 
@@ -43,13 +44,13 @@ release: release~binaries
 .PHONY: release~binaries
 release~binaries:
 	@: $(info releasing the binaries for $(VERSION_TAG))
-	git tag -a -m 'chore: release $(VERSION_TAG)' -f $(VERSION_TAG)
+	git tag -a -m 'chore: release $(VERSION)' -f $(VERSION_TAG)
 	goreleaser release --config=.goreleaser.yml --rm-dist
 
 .PHONY: release~kustomizes
 release~kustomizes:
-	@: $(info versioning kustomizes@$(VERSION_TAG))
-	[ -z "$$(git status -s)" ] || git commit -m 'chore: versioning kustomizes $(VERSION_TAG)' kustomizes manifest
+	@: $(info versioning kustomizes@$(VERSION))
+	[ -z "$$(git status -s)" ] || git commit -m 'chore: versioning kustomizes $(VERSION)' kustomizes manifest
 	git tag -f $(VERSION_TAG) && git push -f origin $(VERSION_TAG)
 
 release~binaries: export GITHUB_TOKEN=$(GIT_TOKEN)
@@ -108,7 +109,7 @@ manifest:
 	@: $(info generating manifest)
 	git rm -fr manifest
 	mkdir manifest && kustomize build kustomizes -o manifest
-	jx cli gitops rename --dir=manifest
+	jx gitops rename --dir=manifest
 	git add manifest
 
 manifest: $(wildcard kustomizes/*.yaml) $(wildcard kustomizes/*/*.yaml)
@@ -119,7 +120,7 @@ manifest: | $(kustomize.bin) $(jx-cli.bin)
 controller-gen: | $(controller-gen.bin) $(jx.bin) $(kustomize.bin)
 	@: $(info generating controller descriptors)
 	$(foreach package,$(packages),$(script))
-	jx cli gitops rename --dir=kustomizes
+	jx gitops rename --dir=kustomizes
 
 controller-gen: packages := gcpauth gcpworkload node meta
 controller-gen: script=$(controller-gen.script)
@@ -149,5 +150,5 @@ $(GOPATH)/bin/controller-gen:
 	tmpdir=$$(mktemp -d)
 	cd $$tmpdir
 	go mod init tmp
-	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.5
+	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.7.0
 	rm -rf $$tmpdir

@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  builder:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      HOST_DOCKER_INTERNAL:
+    extra_hosts:
+    - "host.docker.internal:${HOST_DOCKER_INTERNAL}"

@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  builder:
+    volumes:
+    - /etc/rancher/k3s/k3s.internal.yaml:/etc/rancher/k3s/k3s.yaml
+    extra_hosts:
+    - "host.k3s.internal:${HOST_K3S_INTERNAL}"
+    environment:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      HOST_K3S_INTERNAL:

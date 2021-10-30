@@ -1,0 +1,11 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+metadata:
+  name: .devcontainer
+upstream:
+  type: git
+  git:
+    commit: 7acc7814deacb3576472d876fae11101420fb11f
+    repo: https://github.com/qdm12/godevcontainer
+    directory: /.devcontainer
+    ref: v0.4.0

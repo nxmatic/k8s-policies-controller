@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  dotfiles-nxmatic-init:
+    build:
+      context: ../make.d/devcontainers
+      target: dotfiles-nxmatic-init    
+    volumes:
+    - run:/var/run/docker-entrypoints
+    - home:/home/jenkins
+    environment:
+      DOTFILES: /home/jenkins
+    user: "1000"
+    depends_on:
+      builder:
+        condition: service_started
+volumes:
+  run:
+  home:

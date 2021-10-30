@@ -1,13 +1,11 @@
 include make.d/make.mk
 include make.d/os.mk
 
+include .devcontainer/make.mk
+
+
 controller-gen.bin := $(shell which controller-gen)
 controller-gen.bin := $(if $(controller-gen.bin),$(controller-gen.bin),$(GOPATH)/bin/controller-gen)
-
-make.d make.d/make.mk make.d/os.mk&:
-	@: $(info loading git sub modules)
-	git submodule init
-	git submodule update
 
 ifndef
 NAMESPACE := jx
@@ -141,13 +139,6 @@ fmt: kustomize~fmt
 
 .PHONY: up
 up: image unkustomizes kustomizes
-
-.PHONY: version
-version:
-	@echo $(VERSION_TAG)
-
-VERSION::
-	@echo v$(VERSION_TAG) > $(@)
 
 # Run go vet against code
 vet:

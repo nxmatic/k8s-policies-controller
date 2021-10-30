@@ -11,9 +11,7 @@ controller-gen.bin := $(if $(controller-gen.bin),$(controller-gen.bin),$(GOPATH)
 ifndef
 NAMESPACE := jx
 endif
-ifndef VERSION
-VERSION := $(shell git describe --always --tags| sed -r 's/^v//')
-endif
+VERSION := $(version)
 VERSION_PKG := $(PKG)/pkg/version
 VERSION_DATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 VERSION_TAG := v$(VERSION)
